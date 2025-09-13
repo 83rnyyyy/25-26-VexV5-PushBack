@@ -205,60 +205,62 @@ void opcontrol() {
     // controller
     // loop to continuously update motors
     while (true) {
-        pros::lcd::print(4, "updated");
-        
-        // get joystick positions
+        // get left y and right x positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-        // int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        // move the chassis with curvature drive
-        chassis.arcade(leftY, -leftX,true, 0.25);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+        // move the robot
+        chassis.arcade(leftY, rightX);
+
+        // delay to save resources
+        pros::delay(25);
+    }
 
         ///////////////////////// intake
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { 
-            intakeDirection = true;
-          } 
-        else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {  
+        // if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { 
+        //     intakeDirection = true;
+        //   } 
+        // else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {  
             
-            intakeDirection = false;
-        } 
+        //     intakeDirection = false;
+        // } 
         
 
-        // if (intakeDirection){
-        //     intake.move(127);  // Move forward
+        // // if (intakeDirection){
+        // //     intake.move(127);  // Move forward
+        // // }
+
+        // // else if (!intakeDirection){
+        // //     intake.move(-127);
+        // // }
+        // ///////////////////////////////////////////
+        
+        // if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+        //     clampActivated = !clampActivated;  // Toggle state
+        
+        //     if (clampActivated) {
+        //         clamp.extend();
+        //     } else {
+        //         clamp.retract();
+        //     }
         // }
 
-        // else if (!intakeDirection){
-        //     intake.move(-127);
+
+
+
+        
+        // if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+        //     climbExtended = !climbExtended;  // Toggle state,mst
+        
+        //     if (climbExtended) {
+        //         climb.extend();
+        //     } else {
+        //         climb.retract();
+        //     }
         // }
-        ///////////////////////////////////////////
-        
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-            clampActivated = !clampActivated;  // Toggle state
-        
-            if (clampActivated) {
-                clamp.extend();
-            } else {
-                clamp.retract();
-            }
-        }
-
-
-
-
-        
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-            climbExtended = !climbExtended;  // Toggle state,mst
-        
-            if (climbExtended) {
-                climb.extend();
-            } else {
-                climb.retract();
-            }
-        }
 
         
         // delay to save resources
         pros::delay(10);
-    }
+    
 }
