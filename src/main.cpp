@@ -119,6 +119,11 @@ void initialize() {
             pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            pros::c::optical_rgb_s_t rgb = optical.get_rgb();
+            pros::lcd::print(2, "Red:  %f", rgb.red);
+            pros::lcd::print(2, "Green:  %f", rgb.green);
+            pros::lcd::print(2, "Blue:  %f", rgb.green);
+            pros::lcd::print(2, "Brightness:  %f", rgb.brightness);
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
