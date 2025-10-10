@@ -16,8 +16,8 @@ pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue); // right mot
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
-// optical sensor (no port determined yet)
-pros::optical::Optical optical_sensor(8)
+// optical sensor (no port determined yet, for now just 8)
+pros::optical::Optical optical_sensor(8);
 
 // Inertial Sensor on port 10
 pros::Imu imu(10);
