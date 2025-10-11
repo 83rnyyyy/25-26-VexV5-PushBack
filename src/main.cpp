@@ -17,7 +17,7 @@ pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue); // right mot
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
 // optical sensor (no port determined yet, for now just 8)
-pros::optical::Optical optical_sensor(8);
+pros::Optical optical(8);
 
 // Inertial Sensor on port 10
 pros::Imu imu(10);
@@ -116,14 +116,20 @@ void initialize() {
     pros::Task screenTask([&]() {
         while (true) {
             // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            lemlib::Pose chass = chassis.getPose();
+            pros::lcd::print(0, "X: %f", chass.x); // x
+            pros::lcd::print(1, "Y: %f", chass.y); // y
+            pros::lcd::print(2, "Theta: %f", chass.theta); // heading
+            
+            // TODO:
+            // decide whether to use raw un-processed
+            // or processed RGBC data from the sensor
             pros::c::optical_rgb_s_t rgb = optical.get_rgb();
-            pros::lcd::print(2, "Red:  %f", rgb.red);
-            pros::lcd::print(2, "Green:  %f", rgb.green);
-            pros::lcd::print(2, "Blue:  %f", rgb.green);
-            pros::lcd::print(2, "Brightness:  %f", rgb.brightness);
+            pros::lcd::print(3, "Red:  %f", rgb.red);
+            pros::lcd::print(4, "Green:  %f", rgb.green);
+            pros::lcd::print(5, "Blue:  %f", rgb.blue);
+            pros::lcd::print(6, "Brightness:  %f", rgb.brightness);
+
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
