@@ -131,7 +131,7 @@ void initialize() {
             pros::lcd::print(6, "Brightness:  %f", rgb.brightness);
 
             // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
+            lemlib::telemetrySink()->info("Chassis pose: {}", chass);
             // delay to save resources
             pros::delay(50);
         }
