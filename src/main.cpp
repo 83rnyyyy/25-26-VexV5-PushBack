@@ -130,7 +130,7 @@ void initialize() {
             double saturation = optical.get_saturation();
             pros::lcd::print(4, "Saturation:  %f", saturation);
             double brightness = optical.get_brightness();
-            pros::lcd::print(4, "Brightness:  %f", brightness);
+            pros::lcd::print(5, "Brightness:  %f", brightness);
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
@@ -227,6 +227,7 @@ void opcontrol() {
 
         // move the robot
         chassis.arcade(leftY, rightX);
+
 
         // delay to save resources
         pros::delay(25);
