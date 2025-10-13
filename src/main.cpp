@@ -124,11 +124,13 @@ void initialize() {
             // TODO:
             // decide whether to use raw un-processed
             // or processed RGBC data from the sensor
-            pros::c::optical_rgb_s_t rgb = optical.get_rgb();
-            pros::lcd::print(3, "Red:  %f", rgb.red);
-            pros::lcd::print(4, "Green:  %f", rgb.green);
-            pros::lcd::print(5, "Blue:  %f", rgb.blue);
-            pros::lcd::print(6, "Brightness:  %f", rgb.brightness);
+            // Display HSV
+            double hue = optical.get_hue();
+            pros::lcd::print(3, "Hue:  %f", hue);
+            double saturation = optical.get_saturation();
+            pros::lcd::print(4, "Saturation:  %f", saturation);
+            double brightness = optical.get_brightness();
+            pros::lcd::print(4, "Brightness:  %f", brightness);
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
@@ -175,7 +177,7 @@ void autonomous() {
     // chassis.waitUntilDone();
     // intake.move(127);
 
-    chassis.moveToPoint(10, 0, 1000);
+    // chassis.moveToPoint(10, 0, 1000);
 
     // // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
     // chassis.moveToPose(0, 0, 270, 4000, {.forwards = false});
