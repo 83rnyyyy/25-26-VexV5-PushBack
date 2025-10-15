@@ -121,17 +121,11 @@ void initialize() {
             pros::lcd::print(1, "Y: %f", chass.y); // y
             pros::lcd::print(2, "Theta: %f", chass.theta); // heading
             
-            // TODO:
-            // decide whether to use raw un-processed
-            // or processed RGBC data from the sensor
             // Display HSV
-            double hue = optical.get_hue();
             pros::lcd::print(3,"---------------------------------------------------------");
-            pros::lcd::print(4, "Hue:  %f", hue);
-            double saturation = optical.get_saturation();
-            pros::lcd::print(5, "Saturation:  %f", saturation);
-            double brightness = optical.get_brightness();
-            pros::lcd::print(6, "Brightness:  %f", brightness);
+            pros::lcd::print(4, "Hue:  %f", optical.get_hue());
+            pros::lcd::print(5, "Saturation:  %f", optical.get_saturation());
+            pros::lcd::print(6, "Brightness:  %f", optical.get_brightness());
             pros::lcd::print(7,"---------------------------------------------------------");
 
             // log position telemetry
