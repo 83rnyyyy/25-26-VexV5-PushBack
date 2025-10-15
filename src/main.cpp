@@ -126,11 +126,13 @@ void initialize() {
             // or processed RGBC data from the sensor
             // Display HSV
             double hue = optical.get_hue();
-            pros::lcd::print(3, "Hue:  %f", hue);
+            pros::lcd::print(3,"---------------------------------------------------------");
+            pros::lcd::print(4, "Hue:  %f", hue);
             double saturation = optical.get_saturation();
-            pros::lcd::print(4, "Saturation:  %f", saturation);
+            pros::lcd::print(5, "Saturation:  %f", saturation);
             double brightness = optical.get_brightness();
-            pros::lcd::print(5, "Brightness:  %f", brightness);
+            pros::lcd::print(6, "Brightness:  %f", brightness);
+            pros::lcd::print(7,"---------------------------------------------------------");
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
