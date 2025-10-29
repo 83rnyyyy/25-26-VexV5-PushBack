@@ -2,6 +2,7 @@
 #include "pros/adi.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/misc.h"
+#include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include <cmath>
 
@@ -10,9 +11,15 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-6, -2, 4},
-                            pros::MotorGearset::blue); // left motor group - ports 3 (reversed), 4, 5 (reversed)
-pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue); // right motor group - ports 6, 7, 9 (reversed)
+pros::MotorGroup leftMotors({-6, -2, 4}, pros::MotorGearset::blue
+                                             ); // left motor group - ports 3 (reversed), 4, 5 (reversed)
+pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue
+                                             ); // right motor group - ports 6, 7, 9 (reversed)
+
+// motor
+pros::Motor intake1(11); // bottom thing (linked to 2 intake things)
+pros::Motor intake2(12); // back thingy (linked to 2 intake thingies)
+pros::Motor intake3(13); // top thing 
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
@@ -103,6 +110,7 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate(); // calibrate sensors
+    optical.disable_gesture(); // disable gesture
 
     // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
@@ -120,22 +128,22 @@ void initialize() {
             pros::lcd::print(0, "X: %f", chass.x); // x
             pros::lcd::print(1, "Y: %f", chass.y); // y
             pros::lcd::print(2, "Theta: %f", chass.theta); // heading
-            
+
             // Display HSV
-            pros::lcd::print(3,"---------------------------------------------------------");
-            pros::lcd::print(4, "Hue:  %f", optical.get_hue());
-            pros::lcd::print(5, "Saturation:  %f", optical.get_saturation());
-            pros::lcd::print(6, "Brightness:  %f", optical.get_brightness());
-            pros::lcd::print(7,"---------------------------------------------------------");
-            
-            // Test red and blue detection
-            double hue = optical.get_hue();
+            pros::lcd::print(3, "Hue:  %f", optical.get_hue());
+            pros::lcd::print(4, "Saturation:  %f", optical.get_saturation());
+            pros::lcd::print(5, "Brightness:  %f", optical.get_brightness());
+            pros::lcd::print(6, "Proximity: %d", optical.get_proximity());
+
+            // red/blue colour detection
+            double hue = optical.get_hue(); // get hue
+            int prox = optical.get_proximity(); // get prox
             if ( hue > 315 || hue < 30 ) { // red: hue 315 to 30
-                pros::lcd::print(6, "red detected");
-            } else if ( hue > 165 && hue < 270 ) { // blue: hue 165 to 270
-                pros::lcd::print(6, "blue detected");
+                pros::lcd::print(7, "red detected");
+            } else if ( hue > 80 && hue < 270 ) { // blue: hue 165 to 270
+                pros::lcd::print(7, "blue detected");
             } else { // red and blue both not detected
-                pros::lcd::print(6, "red and blue not detected");
+                pros::lcd::print(7, "red and blue not detected");
             };
 
             // log position telemetry
