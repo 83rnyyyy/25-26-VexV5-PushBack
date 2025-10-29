@@ -128,14 +128,15 @@ void initialize() {
             pros::lcd::print(3, "Hue:  %f", optical.get_hue());
             pros::lcd::print(4, "Saturation:  %f", optical.get_saturation());
             pros::lcd::print(5, "Brightness:  %f", optical.get_brightness());
+            pros::lcd::print(6, "Proximity: %f", optical.get_proximity());
 
             double hue = optical.get_hue();
             if ( hue > 315 || hue < 30 ) { // red: hue 315 to 30
-                pros::lcd::print(6, "red detected");
-            } else if ( hue > 165 && hue < 270 ) { // blue: hue 165 to 270
-                pros::lcd::print(6, "blue detected");
+                pros::lcd::print(7, "red detected");
+            } else if ( hue > 80 && hue < 270 ) { // blue: hue 165 to 270
+                pros::lcd::print(7, "blue detected");
             } else { // red and blue both not detected
-                pros::lcd::print(6, "red and blue not detected");
+                pros::lcd::print(7, "red and blue not detected");
             };
 
             // log position telemetry
