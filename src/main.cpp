@@ -1,6 +1,6 @@
 #include "main.h"
 #include "pros/adi.hpp"
-#include "lemlib/api.hpp" // IWYU pragma: keep
+#include "lemlib/api.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
@@ -23,7 +23,7 @@ pros::Motor intake3(13); // top thing
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
-// optical sensor (no port determined yet, for now just 8)
+// optical sensor
 pros::Optical optical(8);
 
 // Inertial Sensor on port 10
@@ -125,9 +125,9 @@ void initialize() {
         while (true) {
             // print robot location to the brain screen
             lemlib::Pose chass = chassis.getPose();
-            pros::lcd::print(0, "X: %f", chass.x); // x
-            pros::lcd::print(1, "Y: %f", chass.y); // y
-            pros::lcd::print(2, "Theta: %f", chass.theta); // heading
+            pros::lcd::print(0, "X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta);
 
             // Display HSV
             pros::lcd::print(3, "Hue:  %f", optical.get_hue());
@@ -136,19 +136,19 @@ void initialize() {
             pros::lcd::print(6, "Proximity: %d", optical.get_proximity());
 
             // red/blue colour detection
-            double hue = optical.get_hue(); // get hue
-            int prox = optical.get_proximity(); // get prox
-            if ( hue > 315 || hue < 30 ) { // red: hue 315 to 30
+            double hue = optical.get_hue();
+            int prox = optical.get_proximity();
+            if ( hue > 315 || hue < 30 ) {
                 pros::lcd::print(7, "Red detected");
-            } else if ( hue > 80 && hue < 270 ) { // blue: hue 165 to 270
+            } else if ( hue > 80 && hue < 270 ) {
                 pros::lcd::print(7, "Blue detected");
-            } else { // red and blue both not detected
+            } else {
                 pros::lcd::print(7, "Red and blue not detected!");
             };
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
-            // delay to save resources
+
             pros::delay(50);
         }
     });
@@ -242,7 +242,6 @@ void opcontrol() {
         // move the robot
         chassis.arcade(leftY, rightX);
 
-        // delay to save resources
         pros::delay(25);
     }
 
@@ -289,8 +288,7 @@ void opcontrol() {
         //     }
         // }
 
-        
-        // delay to save resources
+
         pros::delay(10);
     
 }
