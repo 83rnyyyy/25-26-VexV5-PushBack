@@ -1,0 +1,20 @@
+---------MODULE-----------|---PORT---
+       Radio (RL)         |    01
+	
+   Left Back Motor (3L)   |    02
+  Left Middle Motor (2L)  |    04
+  Left Front Motor (1L)   |    06
+ 
+  Right Back Motor (6R)   |    05
+  Right Middle Motor (5R) |    07
+  Right Front Motor (4R)  |    03
+ 
+  Front-Back Odom Wheel   |    09
+  Left-Right Odom Wheel   |    20
+
+     Pneumatics/Ramp      |    !H
+ Front Bottom Collector	  |    ++
+   Front Top Collector 	  |    ++
+      Back Collector	    |    ++
+      Color Sensor	      |    ++
+

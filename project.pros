@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "opt",
+    "project_name": "callibrate",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -635,8 +635,8 @@
       }
     },
     "upload_options": {
-      "slot": 2,
-      "description": "test HSV/color detection",
+      "slot": 3,
+      "description": "calibrate PIDnd collection system",
       "icon": "clawbot"
     },
     "use_early_access": false
