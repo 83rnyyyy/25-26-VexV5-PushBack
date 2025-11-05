@@ -168,6 +168,24 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
+void intake() {
+    // // set position to x:0, y:0, heading:0
+    // clamp.retract();
+    // chassis.setPose(12, 46.54, 90);
+    // // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
+    // chassis.moveToPoint(46.64, 46.54, 1000,  {.forwards=false, .maxSpeed = 127,});
+    // chassis.waitUntilDone();
+    // clamp.extend();
+    // chassis.moveToPose(46.64, 23.08, 180, 1000);
+    // chassis.waitUntil(21);
+    // intake.move(127);
+    // chassis.waitUntil(2.36);
+    // intake.move(0);
+    // chassis.moveToPose(12, 12, 225, 1000);
+    // chassis.waitUntilDone();
+    // intake.move(127);
+}
+
 /**
  * Runs during auto
  *
@@ -175,6 +193,8 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  */
 void autonomous() {
     
+    
+
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);
