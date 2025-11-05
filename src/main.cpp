@@ -192,8 +192,6 @@ void intake() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    
-    
 
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
