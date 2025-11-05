@@ -193,6 +193,10 @@ void intake() {
  */
 void autonomous() {
 
+    // test movement for PID callibration
+    chassis.set_pose(0,0,0);
+    chassis.moveToPont(10,0,10000);
+
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);
