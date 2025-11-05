@@ -635,8 +635,8 @@
       }
     },
     "upload_options": {
-      "slot": 3,
-      "description": "calibrate PIDnd collection system",
+      "slot": 2,
+      "description": "calibrate PID and collection system",
       "icon": "clawbot"
     },
     "use_early_access": false
