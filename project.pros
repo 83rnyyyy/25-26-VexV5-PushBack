@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "PID",
+    "project_name": "callibrate",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -636,7 +636,7 @@
     },
     "upload_options": {
       "slot": 3,
-      "description": "calibrate PID",
+      "description": "calibrate PID and collection system",
       "icon": "clawbot"
     },
     "use_early_access": false
