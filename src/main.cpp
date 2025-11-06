@@ -17,9 +17,9 @@ pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue
                                              ); // right motor group - ports 6, 7, 9 (reversed)
 
 // motor
-pros::Motor intake1(11); // bottom thing (linked to 2 intake things)
-pros::Motor intake2(12); // back thingy (linked to 2 intake thingies)
-pros::Motor intake3(13); // top thing 
+pros::Motor FBCollector(11); // front bottom collector (linked to 2 intake things)
+pros::Motor FTCollector(12); // front top collector
+pros::Motor BCollector(13); // back collector (linked to 2 intake thingies)
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
@@ -169,6 +169,10 @@ void competition_initialize() {}
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 void intake() {
+    FBCollector.move(127); // front bottom collector move counterclockwise
+    BCollector.move(127); // back collector move counterclockwise
+    // TODO: figure out exactly what we're trying to do with this function and where we're using it
+    
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);

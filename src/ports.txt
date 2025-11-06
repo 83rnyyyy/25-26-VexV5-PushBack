@@ -12,9 +12,10 @@
   Front-Back Odom Wheel   |    09
   Left-Right Odom Wheel   |    20
 
+ Front Bottom Collector	  |    11 // TEMPORARY
+   Front Top Collector 	  |    12 // TEMPORARY
+      Back Collector	    |    13 // TEMPORARY
+
      Pneumatics/Ramp      |    !H
- Front Bottom Collector	  |    ++
-   Front Top Collector 	  |    ++
-      Back Collector	    |    ++
       Color Sensor	      |    ++
 
