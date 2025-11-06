@@ -19,9 +19,9 @@ pros::MotorGroup leftMotors({-6, -2, 4}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // motor
-pros::Motor intake1(11); // bottom thing (linked to 2 intake things)
-pros::Motor intake2(12); // back thingy (linked to 2 intake thingies)
-pros::Motor intake3(13); // top thing 
+pros::Motor FBCollector(11); // front bottom collector (linked to 2 intake things)
+pros::Motor FTCollector(12); // front top collector
+pros::Motor BCollector(13); // back collector (linked to 2 intake thingies)
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
@@ -169,6 +169,28 @@ void competition_initialize() {}
 // get a path used for pure pursuit
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
+
+void intake() {
+    FBCollector.move(127); // front bottom collector move counterclockwise
+    BCollector.move(127); // back collector move counterclockwise
+    // TODO: figure out exactly what we're trying to do with this function and where we're using it
+    
+    // // set position to x:0, y:0, heading:0
+    // clamp.retract();
+    // chassis.setPose(12, 46.54, 90);
+    // // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
+    // chassis.moveToPoint(46.64, 46.54, 1000,  {.forwards=false, .maxSpeed = 127,});
+    // chassis.waitUntilDone();
+    // clamp.extend();
+    // chassis.moveToPose(46.64, 23.08, 180, 1000);
+    // chassis.waitUntil(21);
+    // intake.move(127);
+    // chassis.waitUntil(2.36);
+    // intake.move(0);
+    // chassis.moveToPose(12, 12, 225, 1000);
+    // chassis.waitUntilDone();
+    // intake.move(127);
+}
 
 /**
  * Runs during auto
