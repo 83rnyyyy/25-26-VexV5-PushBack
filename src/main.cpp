@@ -19,9 +19,9 @@ pros::MotorGroup leftMotors({-6, -2, 4}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // motor
-pros::Motor FBCollector(11); // front bottom collector (linked to 2 intake things)
-pros::Motor FTCollector(12); // front top collector
-pros::Motor BCollector(13); // back collector (linked to 2 intake thingies)
+pros::Motor FirstCollector(11); // front bottom collector (linked to 2 intake things)
+pros::Motor SecondCollector(12); // back collector (linked to 2 intake thingies)
+pros::Motor ThirdCollector(13); // front top collector
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
@@ -103,6 +103,8 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
 
+
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -138,15 +140,7 @@ void initialize() {
             pros::lcd::print(6, "Proximity: %d", optical.get_proximity());
 
             // red/blue colour detection
-            double hue = optical.get_hue();
-            int prox = optical.get_proximity();
-            if ( hue > 315 || hue < 30 ) {
-                pros::lcd::print(7, "Red detected");
-            } else if ( hue > 80 && hue < 270 ) {
-                pros::lcd::print(7, "Blue detected");
-            } else {
-                pros::lcd::print(7, "Red and blue not detected!");
-            };
+            
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
@@ -154,6 +148,18 @@ void initialize() {
             pros::delay(50);
         }
     });
+}
+
+int colorDet() {
+    double hue = optical.get_hue();
+    int prox = optical.get_proximity();
+    if ( hue > 315 || hue < 30 ) {
+        return 1; // 1 = red
+    } else if ( hue > 80 && hue < 270 ) {
+        return 2; // 2 = blue
+    } else {
+        return 0; // 0 = none
+    };
 }
 
 /**
@@ -170,11 +176,61 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
-void intake() {
-    FBCollector.move(127); // front bottom collector move counterclockwise
-    BCollector.move(127); // back collector move counterclockwise
-    // TODO: figure out exactly what we're trying to do with this function and where we're using it
-    
+// test code for intake collection
+void intakeForBlueAlliance() {
+    while (true) {
+        FirstCollector.move(127);
+    }
+
+    FirstCollector.move(127); // front bottom collector move counterclockwise
+    SecondCollector.move(127); // back collector move counterclockwise
+    // if detect red we want to take out
+    if ( colorDet() == 1 ){
+        SecondCollector.move(127);
+        FirstCollector.move(127);
+        ThirdCollector.move(127);
+    } else if ( colorDet() == 2 ) {
+        SecondCollector.move(-127);
+        FirstCollector.move(-127);
+    }
+
+
+    // // set position to x:0, y:0, heading:0
+    // clamp.retract();
+    // chassis.setPose(12, 46.54, 90);
+    // // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
+    // chassis.moveToPoint(46.64, 46.54, 1000,  {.forwards=false, .maxSpeed = 127,});
+    // chassis.waitUntilDone();
+    // clamp.extend();
+    // chassis.moveToPose(46.64, 23.08, 180, 1000);
+    // chassis.waitUntil(21);
+    // intake.move(127);
+    // chassis.waitUntil(2.36);
+    // intake.move(0);
+    // chassis.moveToPose(12, 12, 225, 1000);
+    // chassis.waitUntilDone();
+    // intake.move(127);
+}
+
+// test code for intake collection
+void intakeForRedAlliance() {
+    while (true) {
+        FirstCollector.move(127);
+    }
+
+    FirstCollector.move(127); // front bottom collector move counterclockwise
+    SecondCollector.move(127); // back collector move counterclockwise
+    // if detect blue we want to take out
+    if ( colorDet() == 2 ){
+        SecondCollector.move(127);
+        FirstCollector.move(127);
+        ThirdCollector.move(127);
+    } else if ( colorDet() == 1 ) {
+        SecondCollector.move(-127);
+        FirstCollector.move(-127);
+    }
+
+
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);
@@ -198,10 +254,10 @@ void intake() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-
-    // test movement for PID callibration
+    // test mvmt for PID calib
     chassis.setPose(0,0,0);
-    chassis.moveToPoint(10, 0, 10000, {.forward=false, .maxSpeed=127,});
+    chassis.moveToPoint(0,10,9999,{.forwards=false,.maxSpeed=127});
+
 
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
