@@ -182,8 +182,6 @@ void intakeForBlueAlliance() {
         FirstCollector.move(127);
     }
 
-    FirstCollector.move(127); // front bottom collector move counterclockwise
-    SecondCollector.move(127); // back collector move counterclockwise
     // if detect red we want to take out
     if ( colorDet() == 1 ){
         SecondCollector.move(127);
@@ -218,8 +216,6 @@ void intakeForRedAlliance() {
         FirstCollector.move(127);
     }
 
-    FirstCollector.move(127); // front bottom collector move counterclockwise
-    SecondCollector.move(127); // back collector move counterclockwise
     // if detect blue we want to take out
     if ( colorDet() == 2 ){
         SecondCollector.move(127);
