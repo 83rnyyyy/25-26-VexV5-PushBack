@@ -11,10 +11,11 @@
  
   Front-Back Odom Wheel   |    09
   Left-Right Odom Wheel   |    20
+    Inertial Sensor       |    ++
 
      First Collector      |    11 // Front Bottom Collector
-    Second Collector	  |    12 // Back Collector
-    Third Collector 	  |    13 // Top Collector
+    Second Collector	    |    12 // Back Collector
+    Third Collector 	    |    13 // Top Collector
 
      Pneumatics/Ramp      |    !H
       Color Sensor	      |    ++
