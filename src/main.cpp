@@ -13,10 +13,10 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // motor groups
 // left motor group - ports 3 (reversed), 4, 5 (reversed)
 // CURRENT: left motors: back - 02, middle - 04, front - 06
-pros::MotorGroup leftMotors({2,4,6}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({2,-4,-6}, pros::MotorGearset::blue);
 // right motor group - ports 6, 7, 9 (reversed)
 // CURRENT: right motors: back - 05, middle - 07, front - 03
-pros::MotorGroup rightMotors({3,5,7}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({3,5,-7}, pros::MotorGearset::blue);
 
 // motor
 pros::Motor FirstCollector(11); // front bottom collector (linked to 2 intake things)
@@ -26,14 +26,10 @@ pros::Motor ThirdCollector(13); // front top collector
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
 
 // optical sensor
-pros::Optical optical(8);
+pros::Optical optical(8); // !UNSET!
 
 // Inertial Sensor on port 10
-pros::Imu imu(10);
-
-pros::adi:: Pneumatics clamp('A', false);
-
-pros::adi:: Pneumatics climb('B', false);
+pros::Imu imu(10); // !UNSET!
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
@@ -71,9 +67,9 @@ lemlib::ControllerSettings angularController(1, // proportional gain (kP)
 );
 
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
-pros::Rotation horizontalEnc(20);
+pros::Rotation horizontalEnc(20); // !UNSET!
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
-pros::Rotation verticalEnc(-11);
+pros::Rotation verticalEnc(-11); // !UNSET!
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
 lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, -5.75);
 // vertical tracking wheel. 2.75" diameter, 2.5" offset, left of the robot (negative)

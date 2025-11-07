@@ -1,22 +1,22 @@
 ---------MODULE-----------|---PORT---
        Radio (RL)         |    01
 	
-   Left Back Motor (3L)   |    02
-  Left Middle Motor (2L)  |    04
-  Left Front Motor (1L)   |    06
+   Left Back Motor (3L)   |    02 // TODO: figure out if reversed
+  Left Middle Motor (2L)  |    04 // TODO: figure out if reversed
+  Left Front Motor (1L)   |    06 // TODO: figure out if reversed
  
-  Right Back Motor (6R)   |    05
-  Right Middle Motor (5R) |    07
-  Right Front Motor (4R)  |    03
+  Right Back Motor (6R)   |    05 // TODO: figure out if reversed
+  Right Middle Motor (5R) |    07 // TODO: figure out if reversed
+  Right Front Motor (4R)  |    03 // TODO: figure out if reversed
  
-  Front-Back Odom Wheel   |    09
-  Left-Right Odom Wheel   |    20
+  Front-Back Odom Wheel   |    09 // TODO: figure out if reversed
+  Left-Right Odom Wheel   |    20 // TODO: figure out if reversed
     Inertial Sensor       |    ++
 
      First Collector      |    11 // Front Bottom Collector
     Second Collector	    |    12 // Back Collector
     Third Collector 	    |    13 // Top Collector
 
-     Pneumatics/Ramp      |    !H
+     Pneumatics/Ramp      |    H
       Color Sensor	      |    ++
 
