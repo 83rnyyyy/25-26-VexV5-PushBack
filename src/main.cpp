@@ -329,14 +329,21 @@ void opcontrol() {
         pros::delay(25);
     }
 
-        ///////////////////////// intake
-        // if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { 
-        //     intakeDirection = true;
-        //   } 
-        // else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {  
-            
-        //     intakeDirection = false;
-        // } 
+        /////////////////////// intake
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            // intakeDirection = true;
+            SecondCollector.move(-127);
+            FirstCollector.move(-127);
+        } else if ( controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ) {
+            // intakeDirection = false;
+            SecondCollector.move(127);
+            FirstCollector.move(127);
+            ThirdCollector.move(127);
+        } else {
+            FirstCollector.move(0);
+            SecondCollector.move(0);
+            ThirdCollector.move(0);
+        }
         
 
         // // if (intakeDirection){
