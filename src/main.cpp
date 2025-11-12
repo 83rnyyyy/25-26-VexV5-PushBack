@@ -10,7 +10,7 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-6, -2, 4},
+pros::MotorGroup leftMotors({-6, -2, 4},);
                             pros::MotorGearset::blue); // left motor group - ports 3 (reversed), 4, 5 (reversed)
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue); // right motor group - ports 6, 7, 9 (reversed)
 
@@ -208,7 +208,15 @@ void opcontrol() {
         // get left y and right x positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+            climbExtended = !climbExtended;  // Toggle state,mst
+        
+            if (climbExtended) {
+                climb.extend();
+            } else {
+                climb.retract();
+            }
+        }
         // move the robot
         chassis.arcade(leftY, rightX);
 
