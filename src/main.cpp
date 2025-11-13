@@ -246,8 +246,10 @@ void intakeForRedAlliance() {
  */
 void autonomous() {
     // test mvmt for PID calib
-    chassis.setPose(0,0,0);
-    chassis.moveToPoint(0,10,9999,{.forwards=false,.maxSpeed=127});
+    // chassis.setPose(0,0,0);
+    // chassis.moveToPoint(0,10,9999,{.forwards=false,.maxSpeed=127});
+
+    FirstCollector.move(127);
 
 
     // // set position to x:0, y:0, heading:0
