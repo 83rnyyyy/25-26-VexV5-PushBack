@@ -246,11 +246,11 @@ void intakeForRedAlliance() {
  */
 void autonomous() {
     // test mvmt for PID calib
-    // chassis.setPose(0,0,0);
-    // chassis.moveToPoint(0,10,9999,{.forwards=false,.maxSpeed=127});
-
-    FirstCollector.move(127);
-
+    chassis.setPose(0, 0, 0);
+    // test
+    // chassis.moveToPoint(0,24.25,1500);
+    // one block is 24.25
+    chassis.moveToPoint(, , 1)
 
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
@@ -320,10 +320,10 @@ void opcontrol() {
         chassis.arcade(leftY, rightX);
 
         pros::delay(25);
-    }
 
         /////////////////////// intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+
             // intakeDirection = true;
             SecondCollector.move(-127);
             FirstCollector.move(-127);
@@ -337,6 +337,7 @@ void opcontrol() {
             SecondCollector.move(0);
             ThirdCollector.move(0);
         }
+    }
         
 
         // // if (intakeDirection){
