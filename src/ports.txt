@@ -11,7 +11,7 @@
  
   Front-Back Odom Wheel   |    09 // FB Odom, reversed
   Left-Right Odom Wheel   |    20 // RL Odom
-      Inertial Sensor     |    NOT PLUGGED IN
+      Inertial Sensor     |    ++ // NOT PLUGGED IN
 
      First Collector      |    16 // FBottom
     Second Collector	  |    12 // Back
