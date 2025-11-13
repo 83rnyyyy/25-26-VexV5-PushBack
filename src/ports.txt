@@ -1,5 +1,5 @@
 ---------MODULE-----------|---PORT---
-       Radio (RL)         |    01
+       Radio (RL)         |    01 // it might be 11 now guys
 	
    Left Back Motor (3L)   |    02 // reversed
   Left Middle Motor (2L)  |    04 
