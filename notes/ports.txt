@@ -1,0 +1,23 @@
+---------MODULE-----------|---PORT---
+       Radio (RL)         |    01 // it might be 11 now guys
+	
+   Left Back Motor (3L)   |    02 // reversed
+  Left Middle Motor (2L)  |    04 
+  Left Front Motor (1L)   |    06 // reversed
+ 
+  Right Back Motor (6R)   |    05
+  Right Middle Motor (5R) |    07 // reversed
+  Right Front Motor (4R)  |    03
+ 
+  Front-Back Odom Wheel   |    09 // reversed
+  Left-Right Odom Wheel   |    20
+      Inertial Sensor     |    ++
+
+     First Collector      |    16 // FBottom
+    Second Collector	  |    12 // Back
+     Third Collector 	  |    11 // FTop
+
+         Feeder           |    H  
+          Hood            |    ++ // one of the alphabet ports, I think it's A
+       Color Sensor	      |    19
+
