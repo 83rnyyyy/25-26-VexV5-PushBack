@@ -11,16 +11,14 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-// left motor group - ports 3 (reversed), 4, 5 (reversed)
-// CURRENT: left motors: back - 02, middle - 04, front - 06
+// left motors: (reversed) back - 02, middle - 04, (reversed) front - 06
 pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
-// right motor group - ports 6, 7, 9 (reversed)
-// CURRENT: right motors: back - 05, middle - 07, front - 03
+// right motors: right motors: back - 05, (reversed) middle - 07, front - 03
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // motor
-pros::Motor FirstCollector(16); // front bottom collector (linked to 2 intake things)
-pros::Motor SecondCollector(12); // back collector (linked to 2 intake thingies)
+pros::Motor FirstCollector(16); // front bottom collector (2 drums)
+pros::Motor SecondCollector(12); // back collector (2 drums)
 pros::Motor ThirdCollector(11); // front top collector
 
 //pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
@@ -158,6 +156,18 @@ int colorDet() {
     };
 }
 
+void intake(){
+    FirstCollector.move(127);
+    SecondCollector.move(-127);
+}
+
+void outtake(){
+    SecondCollector.move(127);
+    FirstCollector.move(127);
+    ThirdCollector.move(127);
+}
+
+
 /**
  * Runs while the robot is disabled
  */
@@ -180,12 +190,9 @@ void intakeForBlueAlliance() {
 
     // if detect red we want to take out
     if ( colorDet() == 1 ){
-        SecondCollector.move(127);
-        FirstCollector.move(127);
-        ThirdCollector.move(127);
+        outtake();
     } else if ( colorDet() == 2 ) {
-        SecondCollector.move(-127);
-        FirstCollector.move(-127);
+        intake();
     }
 
     // // set position to x:0, y:0, heading:0
@@ -324,13 +331,10 @@ void opcontrol() {
         /////////////////////// intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             // intakeDirection = true;
-            SecondCollector.move(127);
-            FirstCollector.move(-127);
+            intake();
         } else if ( controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ) {
             // intakeDirection = false;
-            SecondCollector.move(127);
-            FirstCollector.move(127);
-            ThirdCollector.move(127);
+            outtake();
         } else {
             FirstCollector.move(0);
             SecondCollector.move(0);
