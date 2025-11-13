@@ -13,7 +13,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // motor groups
 // left motor group - ports 3 (reversed), 4, 5 (reversed)
 // CURRENT: left motors: back - 02, middle - 04, front - 06
-pros::MotorGroup leftMotors({2, -4, -6}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
 // right motor group - ports 6, 7, 9 (reversed)
 // CURRENT: right motors: back - 05, middle - 07, front - 03
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
@@ -250,7 +250,7 @@ void autonomous() {
     // test
     // chassis.moveToPoint(0,24.25,1500);
     // one block is 24.25
-    chassis.moveToPoint(, , 1)
+    // chassis.moveToPoint(24.25, 0, 1);
 
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
@@ -323,9 +323,8 @@ void opcontrol() {
 
         /////////////////////// intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-
             // intakeDirection = true;
-            SecondCollector.move(-127);
+            SecondCollector.move(127);
             FirstCollector.move(-127);
         } else if ( controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ) {
             // intakeDirection = false;
