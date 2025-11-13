@@ -11,12 +11,13 @@
  
   Front-Back Odom Wheel   |    09 // label: FB Odom, verified
   Left-Right Odom Wheel   |    20 // label: RL Odom, verified
-    Inertial Sensor       |    ++
+      Inertial Sensor     |    NOT PLUGGED IN
 
-     First Collector      |    16 // Front Bottom Collector, verified
-    Second Collector	    |    12 // Back Collector, verified
-    Third Collector 	    |    11 // Top Collector, verified
+     First Collector      |    16 // FBottom
+    Second Collector	    |    12 // Back
+     Third Collector 	    |    11 // FTop
 
-     Pneumatics/Ramp      |    H 
-      Color Sensor	      |    19
+          Feeder          |    H 
+          Hood            |    ++
+       Color Sensor	      |    19
 
