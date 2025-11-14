@@ -183,6 +183,8 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 void intakeForBlueAlliance() {
     FirstCollector.move(127);
 
+    while ( !(colorDet() == 0) ) {} // wait until it detects a color
+
     // if detect red we want to take out
     if ( colorDet() == 1 ){
         outtake();
@@ -194,6 +196,8 @@ void intakeForBlueAlliance() {
 // test code for intake collection
 void intakeForRedAlliance() {
     FirstCollector.move(127);
+
+    while ( !(colorDet() == 0) ) {} // wait until it detects a color
 
     // if detect blue we want to take out
     if ( colorDet() == 2 ){
@@ -210,9 +214,8 @@ void intakeForRedAlliance() {
  */
 void autonomous() {
     // if the starting side is left, simply reverse the + or - sign of the X values
-    // test mvmt for PID calib
     chassis.setPose(0, 0, 0);
-    // test
+    // test mvmt for PID calib
     // chassis.moveToPoint(0,24.25,1500);
     // one block is 24.25
     // this code is prototype. it is possible it crashes into the wall and the tube.
