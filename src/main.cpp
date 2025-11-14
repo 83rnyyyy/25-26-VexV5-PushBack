@@ -218,17 +218,20 @@ void autonomous() {
     // this code is prototype. it is possible it crashes into the wall and the tube.
     chassis.moveToPoint(0, 24.25, 1);
     chassis.moveToPoint(19.25, 24.25, 1);
-    while (int i = 1; i++ <= 3) { // intake 3 times
+    int i = 1;
+    while ( i++ <= 3 ) { // intake 3 times
         intakeForRedAlliance();
     }
     chassis.moveToPoint(19.25, 48.5, 1);
     chassis.moveToPoint(43.5, 48.5, 1);
-    while (int i = 1; i++ <= 2) { // intake 2 times
+    i = 1;
+    while ( i++ <= 2 ) { // intake 2 times
         intakeForRedAlliance();
     }
     chassis.moveToPoint(67.75, 48.5, 1);
     chassis.moveToPoint(43.5, -12.125, 1);
-    while (int i = 1; i++ <= 2) { // intake 2 times
+    i = 1;
+    while ( i++ <= 2 ) { // intake 2 times
         intakeForRedAlliance();
     }
     chassis.moveToPoint(43.5, 12.125, 1);
