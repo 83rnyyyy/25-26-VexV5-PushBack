@@ -29,6 +29,10 @@ pros::Optical optical(19);
 // Inertial Sensor on port 10
 pros::Imu imu(10); // !UNSET!
 
+pros::adi::Pneumatics hood('A', false);
+
+pros::adi::Pneumatics feeder('H', false);
+
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
                               &rightMotors, // right motor group

@@ -18,6 +18,6 @@
      Third Collector 	  |    11 // FTop
 
          Feeder           |    H  
-          Hood            |    ++ // one of the alphabet ports, I think it's A
+          Hood            |    A 
        Color Sensor	      |    19
 
