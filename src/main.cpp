@@ -193,7 +193,7 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 void intakeForBlueAlliance() {
     FirstCollector.move(127);
 
-    while ( !(colorDet() == 0) ) {} // wait until it detects a color
+    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
 
     // if detect red we want to take out
     if ( colorDet() == 1 ){
@@ -207,7 +207,7 @@ void intakeForBlueAlliance() {
 void intakeForRedAlliance() {
     FirstCollector.move(127);
 
-    while ( !(colorDet() == 0) ) {} // wait until it detects a color
+    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
 
     // if detect blue we want to take out
     if ( colorDet() == 2 ){
@@ -219,8 +219,6 @@ void intakeForRedAlliance() {
 
 /**
  * Runs during auto
- *
- * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
     // if the starting side is left, simply reverse the + or - sign of the X values
@@ -250,6 +248,8 @@ void autonomous() {
     chassis.moveToPoint(43.5, 12.125, 1);
     outtake();
     // TODO: set delay before stop intake
+
+
 
 
     // // set position to x:0, y:0, heading:0
