@@ -164,6 +164,12 @@ void outtake(){
     ThirdCollector.move(127);
 }
 
+void stopAllCollectors() {
+    FirstCollector.move(0);
+    SecondCollector.move(0);
+    ThirdCollector.move(0);
+}
+
 
 /**
  * Runs while the robot is disabled
@@ -319,9 +325,7 @@ void opcontrol() {
             // intakeDirection = false;
             outtake();
         } else {
-            FirstCollector.move(0);
-            SecondCollector.move(0);
-            ThirdCollector.move(0);
+            stopAllCollectors();
         }
     }
         
