@@ -209,12 +209,32 @@ void intakeForRedAlliance() {
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
+    // if the starting side is left, simply reverse the + or - sign of the X values
     // test mvmt for PID calib
     chassis.setPose(0, 0, 0);
     // test
     // chassis.moveToPoint(0,24.25,1500);
     // one block is 24.25
-    // chassis.moveToPoint(24.25, 0, 1);
+    // this code is prototype. it is possible it crashes into the wall and the tube.
+    chassis.moveToPoint(0, 24.25, 1);
+    chassis.moveToPoint(19.25, 24.25, 1);
+    while (int i = 1; i++ <= 3) { // intake 3 times
+        intakeForRedAlliance();
+    }
+    chassis.moveToPoint(19.25, 48.5, 1);
+    chassis.moveToPoint(43.5, 48.5, 1);
+    while (int i = 1; i++ <= 2) { // intake 2 times
+        intakeForRedAlliance();
+    }
+    chassis.moveToPoint(67.75, 48.5, 1);
+    chassis.moveToPoint(43.5, -12.125, 1);
+    while (int i = 1; i++ <= 2) { // intake 2 times
+        intakeForRedAlliance();
+    }
+    chassis.moveToPoint(43.5, 12.125, 1);
+    outtake();
+    // TODO: set delay before stop intake
+
 
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
