@@ -239,7 +239,9 @@ void autonomous() {
     while ( i++ <= 2 ) { // intake 2 times
         intakeForRedAlliance();
     }
-    chassis.moveToPoint(67.75, 48.5, 1);
+    // possible alternative to avoid knocking over the thingy:
+    // chassis.moveToPoint(19.25, 48.5, 1);
+    chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
     chassis.moveToPoint(43.5, -12.125, 1);
     i = 1;
     while ( i++ <= 2 ) { // intake 2 times
@@ -247,7 +249,7 @@ void autonomous() {
     }
     chassis.moveToPoint(43.5, 12.125, 1);
     outtake();
-    // TODO: set delay before stop intake
+    // TODO: set delay before stop outtake
 
 
 
@@ -319,8 +321,6 @@ void opcontrol() {
         // move the robot
         chassis.arcade(leftY, rightX);
 
-        pros::delay(25);
-
         /////////////////////// intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             // intakeDirection = true;
@@ -331,6 +331,8 @@ void opcontrol() {
         } else {
             stopAllCollectors();
         }
+
+        pros::delay(25);
     }
         
 
