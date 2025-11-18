@@ -27,7 +27,7 @@ pros::Motor ThirdCollector(11); // front top collector
 pros::Optical optical(19);
 
 // Inertial Sensor on port 10
-pros::Imu imu(10); // !UNSET!
+pros::Imu imu(10);
 
 pros::adi::Pneumatics hood('A', false);
 
@@ -221,36 +221,43 @@ void intakeForRedAlliance() {
  * Runs during auto
  */
 void autonomous() {
-    // if the starting side is left, simply reverse the + or - sign of the X values
-    chassis.setPose(0, 0, 0);
-    // test mvmt for PID calib
-    // chassis.moveToPoint(0,24.25,1500);
-    // one block is 24.25
-    // this code is prototype. it is possible it crashes into the wall and the tube.
-    chassis.moveToPoint(0, 24.25, 1);
-    chassis.moveToPoint(19.25, 24.25, 1);
-    int i = 1;
-    while ( i++ <= 3 ) { // intake 3 times
-        intakeForRedAlliance();
-    }
-    chassis.moveToPoint(19.25, 48.5, 1);
-    chassis.moveToPoint(43.5, 48.5, 1);
-    i = 1;
-    while ( i++ <= 2 ) { // intake 2 times
-        intakeForRedAlliance();
-    }
-    // possible alternative to avoid knocking over the thingy:
-    // chassis.moveToPoint(19.25, 48.5, 1);
-    chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
-    chassis.moveToPoint(43.5, -12.125, 1);
-    i = 1;
-    while ( i++ <= 2 ) { // intake 2 times
-        intakeForRedAlliance();
-    }
-    chassis.moveToPoint(43.5, 12.125, 1);
-    outtake();
-    // TODO: set delay before stop outtake
+    // note: offset is ~8 in, robot length (including feeder down) is 20 in
+    // robot width is 15 in
+    // PID callib
+    chassis.setPose(31.75,20,0);
+    chassis.moveToPoint(31.75, 40, 9999);
 
+    // auton strat
+    // // if the starting side is left, simply reverse the + or - sign of the X values
+    // chassis.setPose(0, 0, 0);
+    // // test mvmt for PID calib
+    // // chassis.moveToPoint(0,24.25,1500);
+    // // one block is 24.25
+    // // this code is prototype. it is possible it crashes into the wall and the tube.
+    // chassis.moveToPoint(0, 24.25, 1);
+    // chassis.moveToPoint(19.25, 24.25, 1);
+    // int i = 1;
+    // while ( i++ <= 3 ) { // intake 3 times
+    //     intakeForRedAlliance();
+    // }
+    // chassis.moveToPoint(19.25, 48.5, 1);
+    // chassis.moveToPoint(43.5, 48.5, 1);
+    // i = 1;
+    // while ( i++ <= 2 ) { // intake 2 times
+    //     intakeForRedAlliance();
+    // }
+    // // possible alternative to avoid knocking over the thingy:
+    // // chassis.moveToPoint(19.25, 48.5, 1);
+    // chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
+    // chassis.moveToPoint(43.5, -12.125, 1);
+    // i = 1;
+    // while ( i++ <= 2 ) { // intake 2 times
+    //     intakeForRedAlliance();
+    // }
+    // chassis.moveToPoint(43.5, 12.125, 1);
+    // outtake();
+    // // TODO: set delay before stop outtake
+    
 
 
 
