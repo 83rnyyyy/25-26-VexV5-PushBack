@@ -246,9 +246,9 @@ void autonomous() {
     // while ( i++ <= 2 ) { // intake 2 times
     //     intakeForRedAlliance();
     // }
-    // // possible alternative to avoid knocking over the thingy:
-    // // chassis.moveToPoint(19.25, 48.5, 1);
-    // chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
+    // chassis.moveToPoint(19.25, 48.5, 1);
+    // knocks over the thing
+    // // chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
     // chassis.moveToPoint(43.5, -12.125, 1);
     // i = 1;
     // while ( i++ <= 2 ) { // intake 2 times
