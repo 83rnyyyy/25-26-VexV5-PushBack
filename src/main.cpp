@@ -5,6 +5,7 @@
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include <cmath>
+#include <cstddef>
 
 
 // controller
@@ -224,8 +225,11 @@ void autonomous() {
     // note: offset is ~8 in, robot length (including feeder down) is 20 in
     // robot width is 15 in
     // PID callib
-    chassis.setPose(31.75,20,0);
-    chassis.moveToPoint(31.75, 40, 9999);
+    // chassis.setPose(31.75,20,0);
+    pros::lcd::print(7, "auton running");
+    chassis.setPose(0,0,0);
+    // chassis.moveToPoint(31.75, 40, 9999);
+    chassis.moveToPoint(0,24.25,1000);
 
     // auton strat
     // // if the starting side is left, simply reverse the + or - sign of the X values
