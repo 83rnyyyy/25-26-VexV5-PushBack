@@ -163,10 +163,21 @@ void intake(){
     SecondCollector.move(-127);
 }
 
-void outtake(){
+void topOuttake(){
     SecondCollector.move(127);
     FirstCollector.move(127);
     ThirdCollector.move(127);
+}
+
+void midOuttake(){
+    SecondCollector.move(127);
+    FirstCollector.move(127);
+    ThirdCollector.move(-127);
+}
+
+void bottomOuttake(){
+    SecondCollector.move(127);
+    FirstCollector.move(-127);
 }
 
 void stopAllCollectors() {
@@ -198,7 +209,7 @@ void intakeForBlueAlliance() {
 
     // if detect red we want to take out
     if ( colorDet() == 1 ){
-        outtake();
+        topOuttake();
     } else if ( colorDet() == 2 ) {
         intake();
     }
@@ -212,7 +223,7 @@ void intakeForRedAlliance() {
 
     // if detect blue we want to take out
     if ( colorDet() == 2 ){
-        outtake();
+        topOuttake();
     } else if ( colorDet() == 1 ) {
         intake();
     }
@@ -336,9 +347,13 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             // intakeDirection = true;
             intake();
-        } else if ( controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ) {
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            midOuttake();
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            bottomOuttake();
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             // intakeDirection = false;
-            outtake();
+            topOuttake();
         } else {
             stopAllCollectors();
         }
