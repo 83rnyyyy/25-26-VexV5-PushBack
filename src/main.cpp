@@ -37,18 +37,18 @@ pros::adi::Pneumatics feeder('H', false);
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
                               &rightMotors, // right motor group
-                              15, // 10 inch track width
+                              12.5, // 10 inch track width
                               lemlib::Omniwheel::NEW_275, // using new 4" omnis
-                              1000, // drivetrain rpm is 360
+                              450, // drivetrain rpm is 360
                               2 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(17.5, // proportional gain (kP)
+lemlib::ControllerSettings linearController(14, // proportional gain (kP)
                                             0, // integral gain (kI)
-                                            30, // derivative gain (kD)
+                                            51, // derivative gain (kD) **NEW VALUE, UNTESTED
                                             0, // anti windup
                                             0, // small error range, in inches
                                             0, // small error range timeout, in milliseconds
