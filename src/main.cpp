@@ -46,9 +46,9 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
 
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(1, // proportional gain (kP)
+lemlib::ControllerSettings linearController(17.5, // proportional gain (kP)
                                             0, // integral gain (kI)
-                                            3, // derivative gain (kD)
+                                            30, // derivative gain (kD)
                                             0, // anti windup
                                             0, // small error range, in inches
                                             0, // small error range timeout, in milliseconds
@@ -240,7 +240,7 @@ void autonomous() {
     pros::lcd::print(7, "auton running");
     chassis.setPose(0,0,0);
     // chassis.moveToPoint(31.75, 40, 9999);
-    chassis.moveToPoint(0,22,1000);
+    chassis.moveToPoint(0,23.6,1000);
 
     // auton strat
     // // if the starting side is left, simply reverse the + or - sign of the X values
