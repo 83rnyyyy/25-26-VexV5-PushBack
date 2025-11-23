@@ -343,10 +343,12 @@ void opcontrol() {
         // move the robot
         chassis.arcade(leftY, rightX);
 
-        /////////////////////// intake
+        /////////////////////// intake ///////////////////////
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             // intakeDirection = true;
             intake();
+
+        /////////////////////// outtake ///////////////////////
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
             midOuttake();
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -357,6 +359,10 @@ void opcontrol() {
         } else {
             stopAllCollectors();
         }
+
+
+        // TODO:
+        // implement feeder and hood controls
 
         pros::delay(25);
     }
