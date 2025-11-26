@@ -240,7 +240,7 @@ void autonomous() {
     pros::lcd::print(7, "auton running");
     chassis.setPose(0,0,0);
     // chassis.moveToPoint(31.75, 40, 9999);
-    chassis.moveToPoint(0,23.6,1000);
+    chassis.turnToHeading(180, 9999);
 
     // TODO: REWRITE THESE COORDINATES, add code for left side
     // auton strat
