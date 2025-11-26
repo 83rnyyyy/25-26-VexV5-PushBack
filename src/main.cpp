@@ -48,7 +48,7 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
 // lateral motion controller
 lemlib::ControllerSettings linearController(13, // proportional gain (kP)
                                             0, // integral gain (kI)
-                                            48, // derivative gain (kD) **NEW VALUE, UNTESTED
+                                            51, // derivative gain (kD) **NEW VALUE, UNTESTED
                                             0, // anti windup
                                             0, // small error range, in inches
                                             0, // small error range timeout, in milliseconds
@@ -236,7 +236,7 @@ void autonomous() {
     // note: offset is ~8 in, robot length (including feeder down) is 20 in
     // robot width is 15 in
     // PID callib
-    chassis.setPose(31.75,20,0);
+    // chassis.setPose(31.75,20,0);
     pros::lcd::print(7, "auton running");
     chassis.setPose(0,0,0);
     // chassis.moveToPoint(31.75, 40, 9999);
