@@ -242,7 +242,7 @@ void autonomous() {
     // // chassis.moveToPoint(31.75, 40, 9999);
     // chassis.moveToPoint(0,23.6,1000);
 
-    // TODO: #6 REWRITE THESE COORDINATES, add code for left side
+    // TODO: REWRITE THESE COORDINATES, add code for left side
     // auton strat
     // if the starting side is left, simply reverse the + or - sign of the X values
     chassis.setPose(0, 0, 0);
