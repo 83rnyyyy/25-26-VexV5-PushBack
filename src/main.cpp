@@ -237,10 +237,10 @@ void autonomous() {
     // robot width is 15 in
     // PID callib
     // chassis.setPose(31.75,20,0);
-    pros::lcd::print(7, "auton running");
-    chassis.setPose(0,0,0);
-    // chassis.moveToPoint(31.75, 40, 9999);
-    chassis.moveToPoint(0,23.6,1000);
+    // pros::lcd::print(7, "auton running");
+    // chassis.setPose(0,0,0);
+    // // chassis.moveToPoint(31.75, 40, 9999);
+    // chassis.moveToPoint(0,23.6,1000);
 
     // TODO: REWRITE THESE COORDINATES
     // auton strat
