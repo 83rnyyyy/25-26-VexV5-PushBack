@@ -215,6 +215,17 @@ void intakeWithDet() {
     }
 }
 
+// 1 = RED
+// 2 = BLUE
+bool alliance = true; // true = red, false = blue
+void intakeWithDet() {
+    if (alliance) {
+        intakeForRedAlliance();
+    } else {
+        intakeForBlueAlliance();
+    }
+}
+
 /**
  * Runs during auto
  */
