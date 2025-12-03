@@ -201,40 +201,17 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
-// test code for intake collection
-void intakeForBlueAlliance() {
-    FirstCollector.move(127);
-
-    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
-
-    // if detect red we want to take out
-    if ( colorDet() == 1 ){
-        topOuttake();
-    } else if ( colorDet() == 2 ) {
-        intake();
-    }
-}
-
-// test code for intake collection
-void intakeForRedAlliance() {
-    FirstCollector.move(127);
-
-    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
-
-    // if detect blue we want to take out
-    if ( colorDet() == 2 ){
-        topOuttake();
-    } else if ( colorDet() == 1 ) {
-        intake();
-    }
-}
-
 bool alliance = true; // true = red, false = blue
 void intakeWithDet() {
-    if (alliance) {
-        intakeForRedAlliance();
-    } else {
-        intakeForBlueAlliance();
+    FirstCollector.move(127);
+
+    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
+
+    // if detect blue we want to take out 
+    if ( colorDet() == 2 - alliance ){
+        topOuttake();
+    } else if ( colorDet() == 1 + alliance ) {
+        intake();
     }
 }
 
