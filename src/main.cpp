@@ -229,6 +229,15 @@ void intakeForRedAlliance() {
     }
 }
 
+bool alliance = true; // true = red, false = blue
+void intakeWithDet() {
+    if (alliance) {
+        intakeForRedAlliance();
+    } else {
+        intakeForBlueAlliance();
+    }
+}
+
 /**
  * Runs during auto
  */
@@ -243,13 +252,13 @@ void autonomous() {
     chassis.moveToPoint(19.25, 24.25, 1);
     int i = 1;
     while ( i++ <= 3 ) { // intake 3 times
-        intakeForRedAlliance();
+        intakeWithDet();
     }
     chassis.moveToPoint(19.25, 48.5, 1);
     chassis.moveToPoint(43.5, 48.5, 1);
     i = 1;
     while ( i++ <= 2 ) { // intake 2 times
-        intakeForRedAlliance();
+        intakeWithDet();
     }
     chassis.moveToPoint(19.25, 48.5, 1);
     // knocks over the thing
@@ -257,7 +266,7 @@ void autonomous() {
     chassis.moveToPoint(43.5, -12.125, 1);
     i = 1;
     while ( i++ <= 2 ) { // intake 2 times
-        intakeForRedAlliance();
+        intakeWithDet();
     }
     chassis.moveToPoint(43.5, 12.125, 1);
     topOuttake();
