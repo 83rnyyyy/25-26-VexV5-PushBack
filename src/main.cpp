@@ -203,17 +203,17 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 // 1 = RED
 // 2 = BLUE
-bool alliance = true;
+int alliance = 2;
 void intakeWithDet() {
     FirstCollector.move(127);
 
     while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
 
-    // if detect blue we want to take out 
-    if ( colorDet() == 2 - alliance ){
-        topOuttake();
-    } else if ( colorDet() == 1 + alliance ) {
+    // if detect color matching alliance, intake
+    if ( colorDet() == alliance ){
         intake();
+    } else {
+        topOuttake();
     }
 }
 
