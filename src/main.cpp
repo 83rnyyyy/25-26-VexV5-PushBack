@@ -331,6 +331,8 @@ bool clampActivated = false;
 
 bool pressed = false;
 
+bool manual = false;
+
 void opcontrol() {
     
     // controller
@@ -343,21 +345,29 @@ void opcontrol() {
         // move the robot
         chassis.arcade(leftY, rightX);
 
-        /////////////////////// intake ///////////////////////
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            // intakeDirection = true;
-            intake();
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+            manual = !manual;
+        }
 
-        /////////////////////// outtake ///////////////////////
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            midOuttake();
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            bottomOuttake();
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            // intakeDirection = false;
-            topOuttake();
-        } else {
-            stopAllCollectors();
+        if (manual) {
+            /////////////////////// intake ///////////////////////
+            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+                // intakeDirection = true;
+                intake();
+
+            /////////////////////// outtake ///////////////////////
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                midOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+                bottomOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+                // intakeDirection = false;
+                topOuttake();
+            } else {
+                stopAllCollectors();
+            }
+        } else { // automatic
+            intakeWithDet();
         }
 
 
