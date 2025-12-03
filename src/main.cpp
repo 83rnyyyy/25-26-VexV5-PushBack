@@ -201,7 +201,9 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
-bool alliance = true; // true = red, false = blue
+// 1 = RED
+// 2 = BLUE
+bool alliance = true;
 void intakeWithDet() {
     FirstCollector.move(127);
 
@@ -215,16 +217,7 @@ void intakeWithDet() {
     }
 }
 
-// 1 = RED
-// 2 = BLUE
-bool alliance = true; // true = red, false = blue
-void intakeWithDet() {
-    if (alliance) {
-        intakeForRedAlliance();
-    } else {
-        intakeForBlueAlliance();
-    }
-}
+
 
 /**
  * Runs during auto
