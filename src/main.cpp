@@ -229,7 +229,7 @@ void intakeForRedAlliance() {
     }
 }
 
-bool alliance = true; // true = red, false = blue
+bool alliance = false; // true = red, false = blue
 void intakeWithDet() {
     if (alliance) {
         intakeForRedAlliance();
