@@ -201,19 +201,19 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
-// 1 = RED
-// 2 = BLUE
-int alliance = 2;
-void intakeWithDet() {
+// true = RED
+// false = BLUE
+int alliance = true;
+void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH IT
     FirstCollector.move(127);
 
     while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
 
     // if detect color matching alliance, intake
-    if ( colorDet() == alliance ){
-        intake();
-    } else {
+    if ( colorDet() == 2 - alliance ){
         topOuttake();
+    } else if ( colorDet() == 1 + alliance ) {
+        intake();
     }
 }
 
