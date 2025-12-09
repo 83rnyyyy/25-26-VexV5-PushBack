@@ -211,13 +211,30 @@ void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH I
 
     // if detect color matching alliance, intake
     if ( colorDet() == 2 - alliance ){
-        topOuttake();
+        bottomOuttake();
     } else if ( colorDet() == 1 + alliance ) {
         intake();
     }
 }
 
+// TODO: make it possible to terminate this loop with an and in the for statement
+// TODO: make a version of this in a sepeate task for async (if possible) in a seperate function for the opcontrol loop
+void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake, 0 makes it infinite
+    intake();
 
+    while (colorDet() == 0) {}
+    
+    for (int i = 1; (i <= blocks or i > 1);) { // 
+        // check colour (and choose to spit out or intake, if intake is chosen, then increment i)
+        if ( colorDet() == 2 - alliance ){
+            bottomOuttake();
+        } else if ( colorDet() == 1 + alliance ) {
+            i++;
+        }
+        intake();
+        while (colorDet() == 0) {}
+    }
+}
 
 /**
  * Runs during auto
@@ -231,24 +248,15 @@ void autonomous() {
     chassis.setPose(0, 0, 0);
     chassis.moveToPoint(0, 24.25, 1);
     chassis.moveToPoint(19.25, 24.25, 1);
-    int i = 1;
-    while ( i++ <= 3 ) { // intake 3 times
-        intakeWithDet();
-    }
+    intakeWithDetMultiple(3);
     chassis.moveToPoint(19.25, 48.5, 1);
     chassis.moveToPoint(43.5, 48.5, 1);
-    i = 1;
-    while ( i++ <= 2 ) { // intake 2 times
-        intakeWithDet();
-    }
+    intakeWithDetMultiple(2);
     chassis.moveToPoint(19.25, 48.5, 1);
     // knocks over the thing
     chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
     chassis.moveToPoint(43.5, -12.125, 1);
-    i = 1;
-    while ( i++ <= 2 ) { // intake 2 times
-        intakeWithDet();
-    }
+    intakeWithDetMultiple(2);
     chassis.moveToPoint(43.5, 12.125, 1);
     topOuttake();
     pros::delay(4269);
@@ -348,7 +356,7 @@ void opcontrol() {
                 stopAllCollectors();
             }
         } else { // automatic
-            intakeWithDet();
+            intakeWithDetMultiple(0);
         }
 
 
