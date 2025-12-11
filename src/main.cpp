@@ -224,7 +224,7 @@ void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake,
 
     while (colourDet() == 0) {}
     
-    for (int i = 1; (i <= blocks or i > 1);) { // 
+    for (int i = 1; (i <= blocks or i > 1);) {
         // check colour (and choose to spit out or intake, if intake is chosen, then increment i)
         if ( colourDet() == 2 - alliance ){
             FirstCollector.move(-127);
@@ -324,7 +324,7 @@ bool pressed = false;
 bool manual = false;
 
 void opcontrol() {
-    pros::Task autoIntakeTask([&]() {intakeWithDetMultiple();});
+    pros::Task autoIntakeTask([&]() {intakeWithDetMultiple(0);});
     // controller
     // loop to continuously update motors
     while (true) {
@@ -338,10 +338,13 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             manual = !manual;
             if (manual) {
-                autoIntakeTask.remove();
+                autoIntakeTask.suspend();
             } else {
-              pros::Task autoIntakeTask([&]() {intakeWithDetMultiple();});
+                // pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
+                autoIntakeTask.resume();
+                stopAllCollectors();
             }
+            while (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {} // wait until not pressed
         }
 
         if (manual) {
