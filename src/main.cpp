@@ -146,7 +146,7 @@ void initialize() {
     });
 }
 
-int colorDet() {
+int colourDet() {
     double hue = optical.get_hue();
     int prox = optical.get_proximity();
     if ( hue > 315 || hue < 30 ) {
@@ -207,12 +207,12 @@ int alliance = true;
 void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH IT
     FirstCollector.move(127);
 
-    while (colorDet() == 0) {} // hangs the damn clanker until it detects a color
+    while (colourDet() == 0) {} // hangs the damn clanker until it detects a colour
 
-    // if detect color matching alliance, intake
-    if ( colorDet() == 2 - alliance ){
+    // if detect colour matching alliance, intake
+    if ( colourDet() == 2 - alliance ){
         bottomOuttake();
-    } else if ( colorDet() == 1 + alliance ) {
+    } else if ( colourDet() == 1 + alliance ) {
         intake();
     }
 }
@@ -222,18 +222,18 @@ void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH I
 void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake, 0 makes it infinite
     intake();
 
-    while (colorDet() == 0) {}
+    while (colourDet() == 0) {}
     
     for (int i = 1; (i <= blocks or i > 1);) { // 
         // check colour (and choose to spit out or intake, if intake is chosen, then increment i)
-        if ( colorDet() == 2 - alliance ){
+        if ( colourDet() == 2 - alliance ){
             FirstCollector.move(-127);
-            while (colorDet() == 2) {}
-        } else if ( colorDet() == 1 + alliance ) {
+            while (colourDet() == 2) {}
+        } else if ( colourDet() == 1 + alliance ) {
             i++;
         }
         intake();
-        while (colorDet() == 0) {}
+        while (colourDet() == 0) {}
     }
 }
 
