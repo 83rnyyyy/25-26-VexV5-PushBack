@@ -149,9 +149,9 @@ void initialize() {
 int colourDet() {
     double hue = optical.get_hue();
     int prox = optical.get_proximity();
-    if ( hue > 315 || hue < 30 ) {
+    if ( hue > 340 || hue < 25 ) {
         return 1; // 1 = red
-    } else if ( hue > 80 && hue < 270 ) {
+    } else if ( hue > 90 && hue < 260 ) {
         return 2; // 2 = blue
     } else {
         return 0; // 0 = none
@@ -328,10 +328,14 @@ bool clampActivated = false;
 
 bool pressed = false;
 
-bool manual = false;
+bool manual = true;
 
 void opcontrol() {
-    pros::Task autoIntakeTask([&]() {intakeWithDetMultiple(0);});
+    pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
+    if (manual) {
+        autoIntakeTask.suspend();
+        stopAllCollectors();
+    }
     // controller
     // loop to continuously update motors
     while (true) {
@@ -345,11 +349,13 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             manual = !manual;
             if (manual) {
-                autoIntakeTask.suspend();
+              autoIntakeTask.suspend();
+              stopAllCollectors();
             } else {
                 // pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
-                autoIntakeTask.resume();
                 stopAllCollectors();
+                intake();
+                autoIntakeTask.resume();
             }
             while (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) { // wait until not pressed
                 pros::delay(20);
