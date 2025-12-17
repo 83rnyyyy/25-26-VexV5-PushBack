@@ -207,7 +207,9 @@ int alliance = true;
 void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH IT
     FirstCollector.move(127);
 
-    while (colourDet() == 0) {} // hangs the damn clanker until it detects a colour
+    while (colourDet() == 0) {
+        pros::delay(20);
+    } // hangs the damn clanker until it detects a colour
 
     // if detect colour matching alliance, intake
     if ( colourDet() == 2 - alliance ){
@@ -222,7 +224,9 @@ void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH I
 void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake, 0 makes it infinite
     intake();
 
-    while (colourDet() == 0) {}
+    while (colourDet() == 0) {
+        pros::delay(20);
+    }
     
     for (int i = 1; (i <= blocks or i > 1);) {
         // check colour (and choose to spit out or intake, if intake is chosen, then increment i)
@@ -233,7 +237,10 @@ void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake,
             i++;
         }
         intake();
-        while (colourDet() == 0) {}
+        while (colourDet() == 0) {
+            pros::delay(20);
+        }
+        pros::delay(20);
     }
 }
 
@@ -344,7 +351,9 @@ void opcontrol() {
                 autoIntakeTask.resume();
                 stopAllCollectors();
             }
-            while (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {} // wait until not pressed
+            while (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) { // wait until not pressed
+                pros::delay(20);
+            }
         }
 
         if (manual) {
