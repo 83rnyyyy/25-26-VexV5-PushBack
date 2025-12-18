@@ -261,18 +261,12 @@ void autonomous() {
     chassis.moveToPoint(43.5, 48.5, 500);
     intakeWithDetMultiple(2);
     chassis.moveToPoint(19.25, 48.5, 500);
-    // knocks over the thing
     chassis.moveToPoint(61.6875, 48.5, 500); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
     chassis.moveToPoint(43.5, -12.125, 500);
     intakeWithDetMultiple(2);
     chassis.moveToPoint(43.5, 12.125, 500);
     topOuttake();
-    pros::delay(4269);
-    stopAllCollectors();
     
-
-
-
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);
@@ -331,6 +325,7 @@ bool pressed = false;
 bool manual = true;
 
 void opcontrol() {
+    stopAllCollectors();
     pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
     if (manual) {
         autoIntakeTask.suspend();
