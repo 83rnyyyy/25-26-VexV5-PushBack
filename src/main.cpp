@@ -248,6 +248,8 @@ void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake,
  * Runs during auto
  */
 void autonomous() {
+    stopAllCollectors();
+    pros::Task asyncIntakeTask([&]() { intakeWithDetMultiple(0); });
     // note: offset is ~8 in, robot length (including feeder down) is 20 in
     // robot width is 15 in
 
@@ -255,17 +257,22 @@ void autonomous() {
     // if the starting side is left, simply reverse the + or - sign of the X values
     chassis.setPose(-0.333, 0, 0);
     chassis.moveToPoint(0, 24.25, 500);
+    //pros::Task asyncIntakeTask([&]() { intakeWithDetMultiple(0); });
     chassis.moveToPoint(19.25, 24.25, 500);
-    intakeWithDetMultiple(3);
     chassis.moveToPoint(19.25, 48.5, 500);
+    //asyncIntakeTask.suspend();
+    //stopAllCollectors();
     chassis.moveToPoint(43.5, 48.5, 500);
-    intakeWithDetMultiple(2);
+    //intakeWithDetMultiple(2);
     chassis.moveToPoint(19.25, 48.5, 500);
     chassis.moveToPoint(61.6875, 48.5, 500); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
     chassis.moveToPoint(43.5, -12.125, 500);
-    intakeWithDetMultiple(2);
+    // intakeWithDetMultiple(2);
+    asyncIntakeTask.suspend();
+    stopAllCollectors();
     chassis.moveToPoint(43.5, 12.125, 500);
     topOuttake();
+    asyncIntakeTask.remove();
     
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
