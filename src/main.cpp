@@ -115,47 +115,6 @@ int colourDet() {
     };
 }
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
-void initialize() {
-    pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
-    optical.disable_gesture(); // disable gesture
-
-    // the default rate is 50. however, if you need to change the rate, you
-    // can do the following.
-    // lemlib::bufferedStdout().setRate(...);
-    // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
-
-    // for more information on how the formatting for the loggers
-    // works, refer to the fmtlib docs
-
-    // thread to for brain screen and position logging
-    pros::Task screenTask([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            lemlib::Pose chass = chassis.getPose();
-            pros::lcd::print(0, "X: %f", chass.x);
-            pros::lcd::print(1, "Y: %f", chass.y);
-            pros::lcd::print(2, "Theta: %f", chass.theta);
-
-            // Display color
-            pros::lcd::print(3, "Hue:  %f", optical.get_hue());
-            pros::lcd::print(4, "Color detected:  %s", ((colourDet()==1) ? "red" : "blue"));
-
-            // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chass);
-
-            pros::delay(50);
-        }
-    });
-}
-
-
 void intake(){
     FirstCollector.move(127);
     SecondCollector.move(-127);
@@ -183,21 +142,6 @@ void stopAllCollectors() {
     SecondCollector.move(0);
     ThirdCollector.move(0);
 }
-
-
-/**
- * Runs while the robot is disabled
- */
-void disabled() {}
-
-/**
- * runs after initialize if the robot is connected to field control
- */
-void competition_initialize() {}
-
-// get a path used for pure pursuit
-// this needs to be put outside a function
-ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 // true = RED
 // false = BLUE
@@ -262,6 +206,62 @@ void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake,
 }
 
 void intakeTask(void *) {intakeWithDetMultiple(0);} // possibly merge this into intakeWithDetMultiple by just removing the param for it if not needed
+
+
+/**
+ * Runs initialization code. This occurs as soon as the program is started.
+ *
+ * All other competition modes are blocked by initialize; it is recommended
+ * to keep execution time for this mode under a few seconds.
+ */
+void initialize() {
+    pros::lcd::initialize(); // initialize brain screen
+    chassis.calibrate(); // calibrate sensors
+    optical.disable_gesture(); // disable gesture
+
+    // the default rate is 50. however, if you need to change the rate, you
+    // can do the following.
+    // lemlib::bufferedStdout().setRate(...);
+    // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
+
+    // for more information on how the formatting for the loggers
+    // works, refer to the fmtlib docs
+
+    // thread to for brain screen and position logging
+    pros::Task screenTask([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            lemlib::Pose chass = chassis.getPose();
+            pros::lcd::print(0, "X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta);
+
+            // Display color
+            pros::lcd::print(3, "Hue:  %f", optical.get_hue());
+            pros::lcd::print(4, "Color detected:  %s", ((colourDet()==1) ? "red" : "blue"));
+
+            // log position telemetry
+            lemlib::telemetrySink()->info("Chassis pose: {}", chass);
+
+            pros::delay(50);
+        }
+    });
+    pros::Task autoIntakeTask(intakeTask);
+}
+
+/**
+ * Runs while the robot is disabled
+ */
+void disabled() {}
+
+/**
+ * runs after initialize if the robot is connected to field control
+ */
+void competition_initialize() {}
+
+// get a path used for pure pursuit
+// this needs to be put outside a function
+ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 /**
  * Runs during auto
