@@ -149,7 +149,7 @@ void initialize() {
 int colourDet() {
     double hue = optical.get_hue();
     int prox = optical.get_proximity();
-    if ( hue > 340 && hue < 25 ) {
+    if ( hue > 340 || hue < 25 ) {
         return 1; // 1 = red
     } else if ( hue > 90 && hue < 260 ) {
         return 2; // 2 = blue
@@ -221,77 +221,58 @@ void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH I
 
 // TODO: make it possible to terminate this loop with an and in the for statement
 // TODO: make a version of this in a sepeate task for async (if possible) in a seperate function for the opcontrol loop
-volatile bool autoIntakeEnabled = false;
 void intakeWithDetMultiple(int blocks) { // blocks is how many blocks to intake, 0 makes it infinite
     intake();
 
-    for (int i = 1; (i <= blocks or blocks == 0);) {
-        while (colourDet() == 0) {
-            pros::delay(20);
-        }
-
-        if (!autoIntakeEnabled) {
-            stopAllCollectors();
-            while (!autoIntakeEnabled) {
-                pros::delay(20);
-            }
-            stopAllCollectors();
-            intake();
-        }
-
+    while (colourDet() == 0) {
+        pros::delay(20);
+    }
+    
+    for (int i = 1; (i <= blocks or i > 1);) {
         // check colour (and choose to spit out or intake, if intake is chosen, then increment i)
         if ( colourDet() == 2 - alliance ){
             FirstCollector.move(-127);
-            while (colourDet() == 2) {
-                pros::delay(20);
-            }
+            while (colourDet() == 2) {}
         } else if ( colourDet() == 1 + alliance ) {
             i++;
         }
-
-        if (!autoIntakeEnabled) {
-            stopAllCollectors();
-            while (!autoIntakeEnabled) {
-                pros::delay(20);
-            }
-            stopAllCollectors();
-            // intake(); // this is left out bc it's redundant
-        }
-
         intake();
+        while (colourDet() == 0) {
+            pros::delay(20);
+        }
         pros::delay(20);
     }
 }
-
-void intakeTask(void *) {intakeWithDetMultiple(0);} // possibly merge this into intakeWithDetMultiple by just removing the param for it if not needed
 
 /**
  * Runs during auto
  */
 void autonomous() {
-    autoIntakeEnabled = true;
     // note: offset is ~8 in, robot length (including feeder down) is 20 in
     // robot width is 15 in
 
     // auton strat
     // if the starting side is left, simply reverse the + or - sign of the X values
-    chassis.setPose(-0.333, 0, 0);
-    chassis.moveToPoint(0, 24.25, 500);
-    //pros::Task asyncIntakeTask([&]() { intakeWithDetMultiple(0); });
-    chassis.moveToPoint(19.25, 24.25, 500);
-    chassis.moveToPoint(19.25, 48.5, 500);
-    //asyncIntakeTask.suspend();
-    //stopAllCollectors();
-    chassis.moveToPoint(43.5, 48.5, 500);
-    //intakeWithDetMultiple(2);
-    chassis.moveToPoint(19.25, 48.5, 500);
-    chassis.moveToPoint(61.6875, 48.5, 500); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
-    chassis.moveToPoint(43.5, -12.125, 500);
-    // intakeWithDetMultiple(2);
-    autoIntakeEnabled = false;
-    chassis.moveToPoint(43.5, 12.125, 500);
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPoint(0, 24.25, 1);
+    chassis.moveToPoint(19.25, 24.25, 1);
+    intakeWithDetMultiple(3);
+    chassis.moveToPoint(19.25, 48.5, 1);
+    chassis.moveToPoint(43.5, 48.5, 1);
+    intakeWithDetMultiple(2);
+    chassis.moveToPoint(19.25, 48.5, 1);
+    // knocks over the thing
+    chassis.moveToPoint(61.6875, 48.5, 1); // origin was (67.75, 48.5), this is to make sure it doesn't ram the wall
+    chassis.moveToPoint(43.5, -12.125, 1);
+    intakeWithDetMultiple(2);
+    chassis.moveToPoint(43.5, 12.125, 1);
     topOuttake();
+    pros::delay(4269);
+    stopAllCollectors();
     
+
+
+
     // // set position to x:0, y:0, heading:0
     // clamp.retract();
     // chassis.setPose(12, 46.54, 90);
@@ -350,8 +331,10 @@ bool pressed = false;
 bool manual = true;
 
 void opcontrol() {
+    pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
     if (manual) {
-        autoIntakeEnabled = false;
+        autoIntakeTask.suspend();
+        stopAllCollectors();
     }
     // controller
     // loop to continuously update motors
@@ -365,7 +348,15 @@ void opcontrol() {
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
             manual = !manual;
-            autoIntakeEnabled = !manual;
+            if (manual) {
+              autoIntakeTask.suspend();
+              stopAllCollectors();
+            } else {
+                // pros::Task autoIntakeTask([&]() { intakeWithDetMultiple(0); });
+                stopAllCollectors();
+                intake();
+                autoIntakeTask.resume();
+            }
             while (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) { // wait until not pressed
                 pros::delay(20);
             }
@@ -433,5 +424,4 @@ void opcontrol() {
 
 
         pros::delay(10);
-    
 }
