@@ -103,6 +103,17 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 
 
+int colourDet() {
+    double hue = optical.get_hue();
+    int prox = optical.get_proximity();
+    if ( hue > 340 && hue < 25 ) {
+        return 1; // 1 = red
+    } else if ( hue > 90 && hue < 260 ) {
+        return 2; // 2 = blue
+    } else {
+        return 0; // 0 = none
+    };
+}
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -132,11 +143,9 @@ void initialize() {
             pros::lcd::print(1, "Y: %f", chass.y);
             pros::lcd::print(2, "Theta: %f", chass.theta);
 
-            // Display HSV
+            // Display color
             pros::lcd::print(3, "Hue:  %f", optical.get_hue());
-            pros::lcd::print(4, "Saturation:  %f", optical.get_saturation());
-            pros::lcd::print(5, "Brightness:  %f", optical.get_brightness());
-            pros::lcd::print(6, "Proximity: %d", optical.get_proximity());
+            pros::lcd::print(4, "Color detected:  %s", ((colourDet()==1) ? "red" : "blue"));
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
@@ -146,17 +155,6 @@ void initialize() {
     });
 }
 
-int colourDet() {
-    double hue = optical.get_hue();
-    int prox = optical.get_proximity();
-    if ( hue > 340 && hue < 25 ) {
-        return 1; // 1 = red
-    } else if ( hue > 90 && hue < 260 ) {
-        return 2; // 2 = blue
-    } else {
-        return 0; // 0 = none
-    };
-}
 
 void intake(){
     FirstCollector.move(127);
