@@ -242,7 +242,7 @@ void initialize() {
             pros::lcd::print(4, "Color detected:  %s", ((color==0) ? "none" : ((color==1) ? "red" : "blue")));
 
             // auto mode debug
-            pros::lcd::print(5, "Auto intake: %s", (autoIntakeEnabled ? ))
+            pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"))
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
