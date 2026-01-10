@@ -143,8 +143,8 @@ void stopAllCollectors() {
     ThirdCollector.move(0);
 }
 
-// true = RED
-// false = BLUE
+// 1 = RED
+// 2 = BLUE
 int alliance = true;
 void intakeWithDet() { // DO NOT TOUCH THIS FUNCTION. IF IT WORKS, DON'T TOUCH IT
     FirstCollector.move(127);
@@ -238,7 +238,11 @@ void initialize() {
 
             // Display color
             pros::lcd::print(3, "Hue:  %f", optical.get_hue());
-            pros::lcd::print(4, "Color detected:  %s", ((colourDet()==1) ? "red" : "blue"));
+            color = colourDet();
+            pros::lcd::print(4, "Color detected:  %s", ((color==0) ? "none" : ((color==1) ? "red" : "blue")));
+
+            // auto mode debug
+            pros::lcd::print(5, "Auto intake: %s", (autoIntakeEnabled ? ))
 
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
