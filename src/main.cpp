@@ -195,18 +195,34 @@ ASSET(example_txt);
 void autonomous() {
     autoIntakeEnabled = true;
 
-    chassis.setPose(-0.333, 0, 0);
-    chassis.moveToPoint(0, 24.25, 500);
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPoint(0, 24.25, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
     chassis.moveToPoint(19.25, 24.25, 500);
-    chassis.moveToPoint(19.25, 48.5, 500);
-    chassis.moveToPoint(43.5, 48.5, 500);
-    chassis.moveToPoint(19.25, 48.5, 500);
-    chassis.moveToPoint(61.6875, 48.5, 500);
-    chassis.moveToPoint(43.5, -12.125, 500);
-
-    autoIntakeEnabled = false;
-    chassis.moveToPoint(43.5, 12.125, 500);
-    topOuttake();
+    chassis.waitUntilDone();
+    pros::delay(500);
+    chassis.turnToHeading(90, 500);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    chassis.moveToPoint(43.5, 48.5, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    // chassis.moveToPoint(19.25, 48.5, 500);
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // chassis.moveToPoint(61.6875, 48.5, 500);
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // chassis.moveToPoint(43.5, -12.125, 500);
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // pros::delay(1000);
+    // autoIntakeEnabled = false;
+    // chassis.moveToPoint(43.5, 12.125, 500);
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // topOuttake();
 }
 
 // -------------------- Driver Control --------------------
