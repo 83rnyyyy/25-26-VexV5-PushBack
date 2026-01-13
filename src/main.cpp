@@ -121,10 +121,12 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
     int accepted = 0;
 
     while (blocks == 0 || accepted < blocks) {
-        // hard gate: if disabled, motors must be stopped and we wait here
-        while (!autoIntakeEnabled) {
+        if (!autoIntakeEnabled) {
+            // hard gate: if disabled, motors must be stopped and we wait here
             stopAllCollectors();
-            pros::delay(20);
+            while (!autoIntakeEnabled) {
+                pros::delay(20);
+            }
         }
 
         // run intake while enabled
