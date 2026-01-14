@@ -142,6 +142,7 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
             // eject until the rejected color is gone (or auto disabled)
             bottomOuttake();
             while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
+            pros::delay(50);
         } else if (c == keep) {
             // count once per block: wait until it leaves the sensor
             while (autoIntakeEnabled && colourDet() == keep) pros::delay(20);
@@ -199,13 +200,12 @@ void autonomous() {
     chassis.moveToPoint(0, 24.25, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPoint(19.25, 24.25, 500);
+    chassis.moveToPose(19.25, 24.25, 90, 500);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.turnToHeading(90, 500);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPoint(43.5, 48.5, 1000);
+    chassis.moveToPose(43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
     chassis.waitUntilDone();
     pros::delay(500);
     // chassis.moveToPoint(19.25, 48.5, 500);
