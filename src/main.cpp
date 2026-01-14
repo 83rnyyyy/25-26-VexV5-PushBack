@@ -203,8 +203,6 @@ void autonomous() {
     chassis.moveToPose(19.25, 24.25, 90, 500);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.waitUntilDone();
-    pros::delay(500);
     chassis.moveToPose(43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
     chassis.waitUntilDone();
     pros::delay(500);
@@ -212,12 +210,13 @@ void autonomous() {
     // chassis.waitUntilDone();
     // pros::delay(500);
     // chassis.moveToPoint(61.6875, 48.5, 500);
+    // feeder.extend();
     // chassis.waitUntilDone();
     // pros::delay(500);
     // chassis.moveToPoint(43.5, -12.125, 500);
     // chassis.waitUntilDone();
     // pros::delay(500);
-    // pros::delay(1000);
+    // feeder.retract();
     // autoIntakeEnabled = false;
     // chassis.moveToPoint(43.5, 12.125, 500);
     // chassis.waitUntilDone();
@@ -228,7 +227,8 @@ void autonomous() {
 // -------------------- Driver Control --------------------
 
 bool manual = true;
-
+bool feederExtended = false;
+bool hoodExtended = false;
 void opcontrol() {
     autoIntakeEnabled = false;
 
@@ -257,7 +257,24 @@ void opcontrol() {
                 stopAllCollectors();
             }
         }
-        // else: autoIntakeTask controls the collectors
+
+        // PNEUMATICS
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+            feederExtended = !feederExtended;
+            if (feederExtended) {
+                feeder.extend();
+            } else {
+                feeder.retract();
+            }
+        }
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+            hoodExtended = !hoodExtended;
+            if (hoodExtended) {
+                hood.extend();
+            } else {
+                hood.retract();
+            }
+        }
 
         pros::delay(25);
     }
