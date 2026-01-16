@@ -199,16 +199,14 @@ void autonomous() {
     chassis.setPose(0, 0, 0);
     chassis.moveToPoint(0, 24.25, 1000);
     chassis.waitUntilDone();
-    pros::delay(500);
-    chassis.moveToPose(19.25, 24.25, 90, 500);
+    chassis.moveToPose(19.25, 24.25, 90, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
     chassis.moveToPose(43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
     chassis.waitUntilDone();
     pros::delay(500);
-    // chassis.moveToPoint(19.25, 48.5, 500);
-    // chassis.waitUntilDone();
-    // pros::delay(500);
+    chassis.moveToPose(19.25, 24.25, 90, 1000);
+    chassis.waitUntilDone();
     // chassis.moveToPoint(61.6875, 48.5, 500);
     // feeder.extend();
     // chassis.waitUntilDone();
