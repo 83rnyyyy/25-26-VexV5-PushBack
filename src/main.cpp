@@ -193,30 +193,31 @@ void competition_initialize() {}
 
 ASSET(example_txt);
 
+int side = -1; // 1 = right, -1 = left
 void autonomous() {
     autoIntakeEnabled = true;
 
     chassis.setPose(0, 0, 0);
     chassis.moveToPoint(0, 24.25, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPose(19.25, 24.25, 90, 1000);
+    chassis.moveToPose(side*19.25, 24.25, 90, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPose(43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
+    chassis.moveToPose(side*43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPose(19.25, 24.25, 90, 1000);
+    chassis.moveToPose(side*19.25, 24.25, 90, 1000);
     chassis.waitUntilDone();
-    // chassis.moveToPoint(61.6875, 48.5, 500);
+    // chassis.moveToPoint(side*61.6875, 48.5, 500);
     // feeder.extend();
     // chassis.waitUntilDone();
     // pros::delay(500);
-    // chassis.moveToPoint(43.5, -12.125, 500);
+    // chassis.moveToPoint(side*43.5, -12.125, 500);
     // chassis.waitUntilDone();
     // pros::delay(500);
     // feeder.retract();
     // autoIntakeEnabled = false;
-    // chassis.moveToPoint(43.5, 12.125, 500);
+    // chassis.moveToPoint(side*43.5, 12.125, 500);
     // chassis.waitUntilDone();
     // pros::delay(500);
     // topOuttake();
