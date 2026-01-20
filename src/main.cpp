@@ -113,7 +113,7 @@ void intakeWithDet() {
     if (!autoIntakeEnabled) { stopAllCollectors(); return; }
 
     int c = colourDet();
-    if (c == reject) bottomOuttake();
+    if (c == reject) topOuttake();
     else if (c == keep) intake();
 }
 
@@ -143,7 +143,7 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
 
         if (c == reject) {
             // eject until the rejected color is gone (or auto disabled)
-            bottomOuttake();
+            topOuttake();
             while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
             pros::delay(50);
         } else if (c == keep) {
