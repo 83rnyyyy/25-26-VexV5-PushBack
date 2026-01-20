@@ -50,8 +50,8 @@ lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
 // -------------------- QUICK CONFIGURATION --------------------
-bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
-int side = -1; // 1 = right, -1 = left
+constexpr bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
+constexpr int side = -1; // 1 = right, -1 = left
 
 // -------------------- Intake / Color Sort --------------------
 
