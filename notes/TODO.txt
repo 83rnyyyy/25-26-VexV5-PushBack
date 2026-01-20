@@ -1,5 +1,5 @@
 1. fix rejection method for balls of opposing color
     i. outtake from top
-    ii. calibrate rejection timings
+    ii. calibrate proximity threshold for color detector
 2. clean up the branches
 3. create documentation so david can understand code at 11 pm
