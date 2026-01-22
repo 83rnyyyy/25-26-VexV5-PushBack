@@ -200,30 +200,37 @@ void autonomous() {
     autoIntakeEnabled = true;
 
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(0, 24.25, 1000);
+    chassis.moveToPoint(0, 25.25, 1000); // 25.44
     chassis.waitUntilDone();
-    chassis.moveToPose(side*19.25, 24.25, side*90, 1000);
-    chassis.waitUntilDone();
-    pros::delay(500);
-    chassis.moveToPose(side*43.5, 48.5, side*45, 1000); // (43.5, 48.5, 1000)
+    chassis.turnToHeading(side*90, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPose(side*19.25, 24.25, side*90, 1000);
+    chassis.moveToPoint(side*29.25, 25.25, 2000, {.maxSpeed = 32});
     chassis.waitUntilDone();
-    chassis.moveToPoint(side*61.6875, 48.5, 1000);
+    // pros::delay(500);
+    chassis.moveToPose(side*37.5, 42.5, side*90, 3000, {.maxSpeed = 127}); // (43.5, 48.5, 1000)
+    chassis.waitUntilDone();
+    pros::delay(500);
     feeder.extend();
-    chassis.waitUntilDone();
-    pros::delay(500);
-    chassis.moveToPoint(side*43.5, -12.125, 1000);
-    chassis.waitUntilDone();
-    pros::delay(2000);
+    pros::delay(1000);
     feeder.retract();
-    autoIntakeEnabled = false;
-    chassis.moveToPoint(side*43.5, 12.125, 1000);
-    chassis.waitUntilDone();
-    pros::delay(500);
-    topOuttake();
-    pros::delay(5000);
+    // chassis.moveToPose(side*19.25, 24.25, side*90, 1000);
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(side*61.6875, 48.5, 1000);
+    // feeder.extend();
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // chassis.moveToPoint(side*45.72, -12.41, 1000);
+    // chassis.waitUntilDone();
+    // pros::delay(2000);
+    // feeder.retract();
+    // autoIntakeEnabled = false;
+    // chassis.moveToPose(side*44.46, 15.125, 0, 1000);
+    // chassis.waitUntilDone();
+    // pros::delay(500);
+    // topOuttake();
+    // hood.extend();
+    // pros::delay(7000);
 }
 
 // -------------------- Driver Control --------------------
