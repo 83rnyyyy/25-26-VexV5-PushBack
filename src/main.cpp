@@ -261,7 +261,7 @@ void opcontrol() {
         }
 
         // PNEUMATICS
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
             feederExtended = !feederExtended;
             if (feederExtended) {
                 feeder.extend();
@@ -269,7 +269,7 @@ void opcontrol() {
                 feeder.retract();
             }
         }
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
             hoodExtended = !hoodExtended;
             if (hoodExtended) {
                 hood.extend();
