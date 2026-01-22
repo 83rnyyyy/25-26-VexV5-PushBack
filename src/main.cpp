@@ -50,7 +50,7 @@ lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
 // -------------------- QUICK CONFIGURATION --------------------
-constexpr bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
+constexpr bool allianceIsBlue = false; // true = keep BLUE, false = keep RED
 constexpr int side = -1; // 1 = right, -1 = left
 
 // -------------------- Intake / Color Sort --------------------
@@ -113,7 +113,7 @@ void intakeWithDet() {
     if (!autoIntakeEnabled) { stopAllCollectors(); return; }
 
     int c = colourDet();
-    if (c == reject) topOuttake();
+    if (c == reject) midOuttake();
     else if (c == keep) intake();
 }
 
@@ -143,7 +143,7 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
 
         if (c == reject) {
             // eject until the rejected color is gone (or auto disabled)
-            topOuttake();
+            midOuttake();
             while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
             pros::delay(50);
         } else if (c == keep) {
@@ -202,27 +202,28 @@ void autonomous() {
     chassis.setPose(0, 0, 0);
     chassis.moveToPoint(0, 24.25, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPose(side*19.25, 24.25, 90, 1000);
+    chassis.moveToPose(side*19.25, 24.25, side*90, 1000);
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPose(side*43.5, 48.5, 45, 1000); // (43.5, 48.5, 1000)
+    chassis.moveToPose(side*43.5, 48.5, side*45, 1000); // (43.5, 48.5, 1000)
     chassis.waitUntilDone();
     pros::delay(500);
-    chassis.moveToPose(side*19.25, 24.25, 90, 1000);
+    chassis.moveToPose(side*19.25, 24.25, side*90, 1000);
     chassis.waitUntilDone();
-    // chassis.moveToPoint(side*61.6875, 48.5, 500);
-    // feeder.extend();
-    // chassis.waitUntilDone();
-    // pros::delay(500);
-    // chassis.moveToPoint(side*43.5, -12.125, 500);
-    // chassis.waitUntilDone();
-    // pros::delay(500);
-    // feeder.retract();
-    // autoIntakeEnabled = false;
-    // chassis.moveToPoint(side*43.5, 12.125, 500);
-    // chassis.waitUntilDone();
-    // pros::delay(500);
-    // topOuttake();
+    chassis.moveToPoint(side*61.6875, 48.5, 1000);
+    feeder.extend();
+    chassis.waitUntilDone();
+    pros::delay(500);
+    chassis.moveToPoint(side*43.5, -12.125, 1000);
+    chassis.waitUntilDone();
+    pros::delay(2000);
+    feeder.retract();
+    autoIntakeEnabled = false;
+    chassis.moveToPoint(side*43.5, 12.125, 1000);
+    chassis.waitUntilDone();
+    pros::delay(500);
+    topOuttake();
+    pros::delay(5000);
 }
 
 // -------------------- Driver Control --------------------
