@@ -1,3 +1,4 @@
+0. REDUCE TIME TAKEN BY AUTON
 1. fix rejection method for balls of opposing color
     i. outtake from top
     ii. calibrate proximity threshold for color detector
