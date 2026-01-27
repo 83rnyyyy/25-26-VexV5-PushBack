@@ -215,8 +215,6 @@ void autonomous() {
     chassis.moveToPose(side*45.72, -16, side*180, 800, {.lead = 0, .minSpeed = 127});
     chassis.waitUntilDone();
     pros::delay(1500);
-
-    // TESTED ^^ 
     feeder.retract();
     autoIntakeEnabled = false;
     chassis.moveToPose(side*45.72, 0, 0, 800, {.forwards=false});
