@@ -262,19 +262,19 @@ void opcontrol() {
 
         // PNEUMATICS
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-            feederExtended = !feederExtended;
-            if (feederExtended) {
-                feeder.extend();
-            } else {
-                feeder.retract();
-            }
-        }
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
             hoodExtended = !hoodExtended;
             if (hoodExtended) {
                 hood.extend();
             } else {
                 hood.retract();
+            }
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+            feederExtended = !feederExtended;
+            if (feederExtended) {
+                feeder.extend();
+            } else {
+                feeder.retract();
             }
         }
 
