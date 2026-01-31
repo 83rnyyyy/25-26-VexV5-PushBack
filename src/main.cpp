@@ -50,13 +50,14 @@ lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
 // -------------------- QUICK CONFIGURATION --------------------
-constexpr bool allianceIsBlue = false; // true = keep BLUE, false = keep RED
+constexpr bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
 constexpr int side = -1; // 1 = right, -1 = left
 
 // -------------------- Intake / Color Sort --------------------
 
 constexpr int PROX_THRESH = 120;       // tune this
 volatile bool autoIntakeEnabled = false;
+volatile bool rejectMid = true;
 
 int colourDet() {
     int prox = optical.get_proximity();
@@ -113,8 +114,10 @@ void intakeWithDet() {
     if (!autoIntakeEnabled) { stopAllCollectors(); return; }
 
     int c = colourDet();
-    if (c == reject) midOuttake();
-    else if (c == keep) intake();
+    if (c == reject) {
+        if (rejectMid) midOuttake();
+        else bottomOuttake();
+    } else if (c == keep) intake();
 }
 
 void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
@@ -143,9 +146,11 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
 
         if (c == reject) {
             // eject until the rejected color is gone (or auto disabled)
-            midOuttake();
+            if (rejectMid) midOuttake();
+            else bottomOuttake();
             while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
             pros::delay(50);
+            if (rejectMid) pros::delay(500);
         } else if (c == keep) {
             // count once per block: wait until it leaves the sensor
             while (autoIntakeEnabled && colourDet() == keep) pros::delay(20);
@@ -202,28 +207,29 @@ void autonomous() {
     chassis.setPose(0, 0, 0);
     chassis.moveToPoint(0, 6.674, 500); // 6.674
     chassis.waitUntilDone();
-    chassis.turnToHeading(side*45, 800); // 90
+    chassis.turnToHeading(side*45, 500); // 90
     chassis.waitUntilDone();
     chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
     chassis.waitUntilDone();
-    chassis.moveToPose(side*17.73, 27.53, side*45, 3000, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    chassis.moveToPose(side*17.73, 27.53, side*45, 2500, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
     chassis.turnToHeading(side*135, 800);
     chassis.waitUntilDone();
-    chassis.moveToPose(side*45.72, -10, side*180, 3000, {.minSpeed = 127}); // IF NOT WORKING THEN REMOVE MINSPEED
+    chassis.moveToPose(side*46.22, -10, side*180, 3000, {.minSpeed = 127}); // 45.72 -> 46.22
+    
+    rejectMid = false;
     feeder.extend();
     chassis.waitUntilDone();
-    chassis.moveToPose(side*45.72, -16, side*180, 800, {.lead = 0, .minSpeed = 127});
+    chassis.moveToPose(side*46.77, -16.5, side*180, 800, {.lead = 0, .minSpeed = 127}); // 45.72 -> 45.22 -> 46.22 -> 46.72
     chassis.waitUntilDone();
-    pros::delay(1500);
+    pros::delay(1000);
     feeder.retract();
     autoIntakeEnabled = false;
-    chassis.moveToPose(side*45.72, 0, 0, 800, {.forwards=false});
+    chassis.moveToPose(side*46.77, 0, 0, 800, {.forwards=false});
     chassis.turnToHeading(0, 800);
-    chassis.moveToPose(side*45.59, 15.125, 0, 1000, {.lead = 0}); // [UNTESTED REVISION] 40.46 -> 45.59
     chassis.waitUntilDone();
-    topOuttake();
-    pros::delay(1000);
-    hood.extend();
+    chassis.moveToPose(side*46.77, 18.73, side*13, 1000, {.lead = 0}); // working: 41, 14.73
+    chassis.waitUntilDone();
+    // topOuttake();
 }
 
 // -------------------- Driver Control --------------------
@@ -233,6 +239,7 @@ bool feederExtended = false;
 bool hoodExtended = false;
 void opcontrol() {
     autoIntakeEnabled = false;
+    rejectMid = true;
 
     while (true) {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
