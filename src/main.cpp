@@ -202,33 +202,33 @@ void competition_initialize() {}
 ASSET(example_txt);
 
 void autonomous() {
-    // autoIntakeEnabled = true;
+    autoIntakeEnabled = true;
 
-    // chassis.setPose(0, 0, 0);
-    // chassis.moveToPoint(0, 6.674, 500); // 6.674
-    // chassis.waitUntilDone();
-    // chassis.turnToHeading(side*45, 500); // 90
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*17.73, 27.53, side*45, 2500, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
-    // chassis.turnToHeading(side*135, 800);
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*46.22, -10, side*180, 3000, {.minSpeed = 127}); // 45.72 -> 46.22
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPoint(0, 6.674, 500); // 6.674
+    chassis.waitUntilDone();
+    chassis.turnToHeading(side*45, 500); // 90
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*17.73, 27.53, side*45, 2500, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    chassis.turnToHeading(side*135, 800);
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*46.22, -10, side*180, 3000, {.minSpeed = 127}); // 45.72 -> 46.22
     
-    // rejectMid = false;
-    // feeder.extend();
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*46.77, -16.5, side*180, 800, {.lead = 0, .minSpeed = 127}); // 45.72 -> 45.22 -> 46.22 -> 46.72
-    // chassis.waitUntilDone();
-    // pros::delay(1000);
-    // feeder.retract();
-    // autoIntakeEnabled = false;
-    // chassis.moveToPose(side*46.77, 0, 0, 800, {.forwards=false});
-    // chassis.turnToHeading(0, 800);
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*46.77, 18.73, side*13, 1000, {.lead = 0}); // working: 41, 14.73
-    // chassis.waitUntilDone();
+    rejectMid = false;
+    feeder.extend();
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*46.77, -16.5, side*180, 800, {.lead = 0, .minSpeed = 127}); // 45.72 -> 45.22 -> 46.22 -> 46.72
+    chassis.waitUntilDone();
+    pros::delay(1000);
+    feeder.retract();
+    autoIntakeEnabled = false;
+    chassis.moveToPose(side*46.77, 0, 0, 800, {.forwards=false});
+    chassis.turnToHeading(0, 800);
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*46.77, 18.73, side*13, 1000, {.lead = 0}); // working: 41, 14.73
+    chassis.waitUntilDone();
     // topOuttake();
 }
 
