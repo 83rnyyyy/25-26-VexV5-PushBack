@@ -1,8 +1,18 @@
-1. reduce opcontrol sensitivity for arcade
+- re-calibrate OPControl?
+    - Check:
+        - Tracking wheel diameter (exact)
+        - Gear ratio
+        - ~~Wheel offset signs (left/right or front/back reversed)~~
+        - IMU orientation (mounted forward, sideways, upside down?)
+- AUTO ROUTES
+    - Fix current (long tube only)
+    - Watch videos from the auto rating channel in robolytics discord for routines for the following:
+    - Solo (where other alliance team is AFK)
+    - Collab w/ long & middle tube just in case
+- reduce opcontrol sensitivity for arcade
     - maybe divide analogue input values by a number?
     - maybe small deadzone?
-2. fix auton, test WITH TUBE AND WITH LONG TUBE
-3. add code for little hooks pneumatics
+- ~~add code for little hooks pneumatics~~
 
 4. SBot auton refactor if needed? 
 
