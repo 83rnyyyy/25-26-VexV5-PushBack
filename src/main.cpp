@@ -2,265 +2,289 @@
 #include "pros/adi.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/misc.h"
+#include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include <cmath>
-
 
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-6, -2, 4},
-                            pros::MotorGearset::blue); // left motor group - ports 3 (reversed), 4, 5 (reversed)
-pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue); // right motor group - ports 6, 7, 9 (reversed)
+pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
-//pros::MotorGroup intake({11, 10}, pros::MotorGearset::blue);
+// collectors
+pros::Motor FirstCollector(16);   // front bottom collector
+pros::Motor SecondCollector(12);  // back collector
+pros::Motor ThirdCollector(11);   // front top collector
 
-// Inertial Sensor on port 10
+// sensors
+pros::Optical optical(19);
 pros::Imu imu(10);
 
-pros::adi:: Pneumatics clamp('A', false);
-
-pros::adi:: Pneumatics climb('B', false);
+// pneumatics
+pros::adi::Pneumatics wing('A', false);
+pros::adi::Pneumatics feeder('H', false);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
-                              &rightMotors, // right motor group
-                              15, // 10 inch track width
-                              lemlib::Omniwheel::NEW_275, // using new 4" omnis
-                              1000, // drivetrain rpm is 360
-                              2 // horizontal drift is 2. If we had traction wheels, it would have been 8
-);
+lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 
+// controllers
+lemlib::ControllerSettings linearController(13, 0, 51, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings angularController(5, 0, 50, 0, 0, 0, 0, 0, 0);
 
-
-// lateral motion controller
-lemlib::ControllerSettings linearController(50, // proportional gain (kP)
-                                            5, // integral gain (kI)
-                                            15, // derivative gain (kD)
-                                            3, // anti windup
-                                            1, // small error range, in inches
-                                            100, // small error range timeout, in milliseconds
-                                            3, // large error range, in inches
-                                            500, // large error range timeout, in milliseconds
-                                            20 // maximum acceleration (slew)
-);
-
-// angular motion controller
-lemlib::ControllerSettings angularController(10, // proportional gain (kP)
-                                             5, // integral gain (kI)
-                                             50, // derivative gain (kD)
-                                             3, // anti windup
-                                             1, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
-                                             500, // large error range timeout, in milliseconds
-                                             0 // maximum acceleration (slew)
-);
-
-// horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
+// tracking wheels
 pros::Rotation horizontalEnc(20);
-// vertical tracking wheel encoder. Rotation sensor, port 11, reversed
-pros::Rotation verticalEnc(-11);
-// horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
+pros::Rotation verticalEnc(-9);
 lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, -5.75);
-// vertical tracking wheel. 2.75" diameter, 2.5" offset, left of the robot (negative)
 lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.5);
 
-// sensors for odometry
-lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
-                            nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
-                            &horizontal, // horizontal tracking wheel
-                            nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-                            &imu // inertial sensor
-);
+// odom sensors
+lemlib::OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 
-// input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttleCurve(3, // joystick deadband out of 127
-                                     10, // minimum output where drivetrain will move out of 127
-                                     1.019 // expo curve gain
-);
+// drive curves
+lemlib::ExpoDriveCurve throttleCurve(3, 10, 1.019);
+lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 
-// input curve for steer input during driver control
-lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
-                                  10, // minimum output where drivetrain will move out of 127
-                                  1.019 // expo curve gain
-);
-
-// create the chassis
+// chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
+// -------------------- QUICK CONFIGURATION --------------------
+constexpr bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
+constexpr int side = -1; // 1 = right, -1 = left
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+// -------------------- Intake / Color Sort --------------------
+
+constexpr int PROX_THRESH = 120;       // tune this
+volatile bool autoIntakeEnabled = false;
+volatile bool rejectMid = true;
+
+int colourDet() {
+    int prox = optical.get_proximity();
+    if (prox < PROX_THRESH) return 0;
+
+    double hue = optical.get_hue();
+    if (hue > 340 || hue < 25) return 1;        // red
+    if (hue > 90 && hue < 260) return 2;        // blue
+    return 0;
+}
+
+void intake() {
+    FirstCollector.move(127);
+    SecondCollector.move(-127);
+}
+
+void topOuttake() {
+    SecondCollector.move(127);
+    FirstCollector.move(127);
+    ThirdCollector.move(-127);
+}
+
+void midOuttake() {
+    SecondCollector.move(127);
+    FirstCollector.move(127);
+    ThirdCollector.move(127);
+}
+
+void bottomOuttake() {
+    SecondCollector.move(127);
+    FirstCollector.move(-127);
+}
+
+void stopAllCollectors() {
+    FirstCollector.move(0);
+    SecondCollector.move(0);
+    ThirdCollector.move(0);
+}
+
+void intakeWithDet() {
+    const int keep = allianceIsBlue ? 2 : 1;
+    const int reject = allianceIsBlue ? 1 : 2;
+
+    // do nothing unless enabled
+    while (!autoIntakeEnabled) {
+        stopAllCollectors();
+        pros::delay(20);
+    }
+
+    FirstCollector.move(127);
+
+    // wait until we actually see something (but allow disable to break out)
+    while (autoIntakeEnabled && colourDet() == 0) pros::delay(20);
+    if (!autoIntakeEnabled) { stopAllCollectors(); return; }
+
+    int c = colourDet();
+    if (c == reject) {
+        if (rejectMid) midOuttake();
+        else bottomOuttake();
+    } else if (c == keep) intake();
+}
+
+void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
+    const int keep = allianceIsBlue ? 2 : 1;
+    const int reject = allianceIsBlue ? 1 : 2;
+
+    int accepted = 0;
+
+    while (blocks == 0 || accepted < blocks) {
+        if (!autoIntakeEnabled) {
+            // hard gate: if disabled, motors must be stopped and we wait here
+            stopAllCollectors();
+            while (!autoIntakeEnabled) {
+                pros::delay(20);
+            }
+        }
+
+        // run intake while enabled
+        intake();
+
+        // wait for a block to show up (or auto to get disabled)
+        while (autoIntakeEnabled && colourDet() == 0) pros::delay(20);
+        if (!autoIntakeEnabled) continue;
+
+        int c = colourDet();
+
+        if (c == reject) {
+            // eject until the rejected color is gone (or auto disabled)
+            if (rejectMid) midOuttake();
+            else bottomOuttake();
+            while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
+            pros::delay(50);
+            if (rejectMid) pros::delay(500);
+        } else if (c == keep) {
+            // count once per block: wait until it leaves the sensor
+            while (autoIntakeEnabled && colourDet() == keep) pros::delay(20);
+            accepted++;
+        } else {
+            // unknown hue while prox high; just let it move through a bit
+            pros::delay(30);
+        }
+    }
+
+    stopAllCollectors();
+}
+
+void intakeTask(void*) {
+    intakeWithDetMultiple(0);
+}
+
+// -------------------- PROS Callbacks --------------------
+
 void initialize() {
-    pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
+    pros::lcd::initialize();
+    chassis.calibrate();
+    optical.disable_gesture();
 
-    // the default rate is 50. however, if you need to change the rate, you
-    // can do the following.
-    // lemlib::bufferedStdout().setRate(...);
-    // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
-
-    // for more information on how the formatting for the loggers
-    // works, refer to the fmtlib docs
-
-    // thread to for brain screen and position logging
-    pros::Task screenTask([&]() {
+    // IMPORTANT: make tasks static so they don't get destroyed when initialize() returns
+    static pros::Task screenTask([] {
         while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-            // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
-            // delay to save resources
+            lemlib::Pose chass = chassis.getPose();
+            pros::lcd::print(0, "X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta);
+
+            pros::lcd::print(3, "Hue:  %f", optical.get_hue());
+            int color = colourDet();
+            pros::lcd::print(4, "Color detected: %s", (color == 0 ? "none" : (color == 1 ? "red" : "blue")));
+            pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+
+            lemlib::telemetrySink()->info("Chassis pose: {}", chass);
             pros::delay(50);
         }
     });
+
+    static pros::Task autoIntakeTask(intakeTask);
 }
 
-/**
- * Runs while the robot is disabled
- */
 void disabled() {}
-
-/**
- * runs after initialize if the robot is connected to field control
- */
 void competition_initialize() {}
 
-// get a path used for pure pursuit
-// this needs to be put outside a function
-ASSET(example_txt); // '.' replaced with "_" to make c++ happy
+ASSET(example_txt);
 
-/**
- * Runs during auto
- *
- * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
- */
 void autonomous() {
-    
-    // // set position to x:0, y:0, heading:0
-    // clamp.retract();
-    // chassis.setPose(12, 46.54, 90);
-    // // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
-    // chassis.moveToPoint(46.64, 46.54, 1000,  {.forwards=false, .maxSpeed = 127,});
-    // chassis.waitUntilDone();
-    // clamp.extend();
-    // chassis.moveToPose(46.64, 23.08, 180, 1000);
-    // chassis.waitUntil(21);
-    // intake.move(127);
-    // chassis.waitUntil(2.36);
-    // intake.move(0);
-    // chassis.moveToPose(12, 12, 225, 1000);
-    // chassis.waitUntilDone();
-    // intake.move(127);
+    // autoIntakeEnabled = true;
 
-    chassis.moveToPoint(10, 0, 1000);
-
-    // // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
-    // chassis.moveToPose(0, 0, 270, 4000, {.forwards = false});
-    // // cancel the movement after it has traveled 10 inches
-    // chassis.waitUntil(10);
-    // chassis.cancelMotion();
-    // // Turn to face the point x:45, y:-45. Timeout set to 1000
-    // // dont turn faster than 60 (out of a maximum of 127)
-    // chassis.turnToPoint(45, -45, 1000, {.maxSpeed = 60});
-    // // Turn to face a d              irection of 90º. Timeout set to 1000
-    // // will always be faster than 100 (out of a maximum of 127)
-    // // also force it to turn clockwise, the long way around
-    // chassis.turnToHeading(90, 1000, {.direction = AngularDirection::CW_CLOCKWISE, .minSpeed = 100});
-    // // Follow the path in path.txt. Lookahead at 15, Timeout set to 4000
-    // // following the path with the back of the robot (forwards = false)
-    // // see line 116 to see how to define a path
-    // chassis.follow(example_txt, 15, 4000, false);
-    // // wait until the chassis has traveled 10 inches. Otherwise the code directly after
-    // // the movement will run immediately
-    // // Unless its another movement, in which case it will wait
-    // chassis.waitUntil(10);
-    // pros::lcd::print(4, "Traveled 10 inches during pure pursuit!");
+    // chassis.setPose(0, 0, 0);
+    // chassis.moveToPoint(0, 6.674, 500); // 6.674
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(side*45, 500); // 90
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*17.73, 27.53, side*45, 2500, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    // chassis.turnToHeading(side*135, 800);
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*46.22, -10, side*180, 3000, {.minSpeed = 127}); // 45.72 -> 46.22
     
-    // pros::lcd::print(4, "pure pursuit finished!");
+    // rejectMid = false;
+    // feeder.extend();
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*46.77, -16.5, side*180, 800, {.lead = 0, .minSpeed = 127}); // 45.72 -> 45.22 -> 46.22 -> 46.72
+    // chassis.waitUntilDone();
+    // pros::delay(1000);
+    // feeder.retract();
+    // autoIntakeEnabled = false;
+    // chassis.moveToPose(side*46.77, 0, 0, 800, {.forwards=false});
+    // chassis.turnToHeading(0, 800);
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*46.77, 18.73, side*13, 1000, {.lead = 0}); // working: 41, 14.73
+    // chassis.waitUntilDone();
+    // topOuttake();
 }
 
-/**
- * Runs in driver control
- */
+// -------------------- Driver Control --------------------
 
-bool intakeDirection = true; 
-
-bool climbExtended = false;
-
-bool clampActivated = false;
-
-bool pressed = false;
-
+bool manual = true;
+bool feederExtended = false;
+bool wingExtended = false;
 void opcontrol() {
-    
-    // controller
-    // loop to continuously update motors
+    autoIntakeEnabled = false;
+    rejectMid = true;
+
     while (true) {
-        // get left y and right x positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
-        // move the robot
         chassis.arcade(leftY, rightX);
 
-        // delay to save resources
+        // toggle manual/auto (debounced)
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+            manual = !manual;
+            autoIntakeEnabled = !manual;
+            if (manual) stopAllCollectors(); // manual takes control immediately
+        }
+
+        if (manual) {
+            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+                intake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                midOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+                bottomOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+                topOuttake();
+            } else {
+                stopAllCollectors();
+            }
+        }
+
+        // PNEUMATICS
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+            wingExtended = !wingExtended;
+            if (wingExtended) {
+                wing.extend();
+            } else {
+                wing.retract();
+            }
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+            feederExtended = !feederExtended;
+            if (feederExtended) {
+                feeder.extend();
+            } else {
+                feeder.retract();
+            }
+        }
+
         pros::delay(25);
     }
-
-        ///////////////////////// intake
-        // if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { 
-        //     intakeDirection = true;
-        //   } 
-        // else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {  
-            
-        //     intakeDirection = false;
-        // } 
-        
-
-        // // if (intakeDirection){
-        // //     intake.move(127);  // Move forward
-        // // }
-
-        // // else if (!intakeDirection){
-        // //     intake.move(-127);
-        // // }
-        // ///////////////////////////////////////////
-        
-        // if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-        //     clampActivated = !clampActivated;  // Toggle state
-        
-        //     if (clampActivated) {
-        //         clamp.extend();
-        //     } else {
-        //         clamp.retract();
-        //     }
-        // }
-
-
-
-
-        
-        // if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-        //     climbExtended = !climbExtended;  // Toggle state,mst
-        
-        //     if (climbExtended) {
-        //         climb.extend();
-        //     } else {
-        //         climb.retract();
-        //     }
-        // }
-
-        
-        // delay to save resources
-        pros::delay(10);
-    
 }
