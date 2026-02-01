@@ -23,7 +23,7 @@ pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics hood('A', false);
+pros::adi::Pneumatics wing('A', false);
 pros::adi::Pneumatics feeder('H', false);
 
 // drivetrain settings
@@ -236,7 +236,7 @@ void autonomous() {
 
 bool manual = true;
 bool feederExtended = false;
-bool hoodExtended = false;
+bool wingExtended = false;
 void opcontrol() {
     autoIntakeEnabled = false;
     rejectMid = true;
@@ -269,11 +269,11 @@ void opcontrol() {
 
         // PNEUMATICS
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-            hoodExtended = !hoodExtended;
-            if (hoodExtended) {
-                hood.extend();
+            wingExtended = !wingExtended;
+            if (wingExtended) {
+                wing.extend();
             } else {
-                hood.retract();
+                wing.retract();
             }
         }
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
