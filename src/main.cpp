@@ -10,8 +10,8 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({2, -4, 6}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({-3, -5, 7}, pros::MotorGearset::blue);
 
 // collectors
 pros::Motor FirstCollector(16);   // front bottom collector
