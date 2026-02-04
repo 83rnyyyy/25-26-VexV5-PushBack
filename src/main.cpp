@@ -311,7 +311,7 @@ void opcontrol() {
                 midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 bottomOuttake();
-            else {
+            } else {
                 stopAllCollectors();
             }
         }
