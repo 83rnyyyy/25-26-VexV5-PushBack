@@ -227,7 +227,7 @@ void autonomous() {
     chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-    inttake();
+    intake();
     pros::delay(1000);
 
     chassis.moveToPose(side*55, 10, 180, 1000);
@@ -291,9 +291,7 @@ void opcontrol() {
                 midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 bottomOuttake();
-            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                topOuttake();
-            } else {
+            else {
                 stopAllCollectors();
             }
         }
