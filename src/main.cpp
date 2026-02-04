@@ -71,7 +71,6 @@ int colourDet() {
 
 void intake() {
     FirstCollector.move(-127);
-    FirstCollector.move(-127);
     SecondCollector.move(-127);
     ThirdCollector.move(127);
 }
