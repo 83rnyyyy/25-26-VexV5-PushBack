@@ -214,8 +214,9 @@ void autonomous() {
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
 
-    if (side == -1) bottomOuttake();
-    else midOuttake();
+    // if (side == -1) bottomOuttake();
+    // else midOuttake();
+    bottomOuttake();
     pros::delay(1000);
 
     chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
