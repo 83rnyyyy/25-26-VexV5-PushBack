@@ -75,9 +75,7 @@ void intake() {
 }
 
 void topOuttake() {
-    SecondCollector.move(127);
-    FirstCollector.move(127);
-    ThirdCollector.move(-127);
+    intake();
 }
 
 void midOuttake() {
