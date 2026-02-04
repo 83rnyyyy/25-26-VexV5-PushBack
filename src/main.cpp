@@ -72,10 +72,7 @@ int colourDet() {
 void intake() {
     FirstCollector.move(127);
     SecondCollector.move(-127);
-}
-
-void topOuttake() {
-    intake();
+    ThirdCollector.move(127);
 }
 
 void midOuttake() {
@@ -85,6 +82,7 @@ void midOuttake() {
 }
 
 void bottomOuttake() {
+    FirstCollector.move(127);
     SecondCollector.move(127);
     FirstCollector.move(-127);
 }
@@ -229,7 +227,7 @@ void autonomous() {
     chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-    topOuttake();
+    inttake();
     pros::delay(1000);
 
     chassis.moveToPose(side*55, 10, 180, 1000);
