@@ -202,11 +202,41 @@ void competition_initialize() {}
 ASSET(example_txt);
 
 void autonomous() {
-    // autoIntakeEnabled = false;
-    // rejectMid = true;
+    autoIntakeEnabled = false;
+    rejectMid = true;
 
+    chassis.setPose(side*7.826, 13.319, side*90); // TODO: get coordinates relative of origin pos
 
-    // chassis.setPose(0, 0, 0);
+    chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    pros::delay(1000);
+
+    autoIntakeEnabled = true;
+    feeder.extend();
+    chassis.waitUntilDone();
+    pros::delay(1000);
+    chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    topOuttake();
+    pros::delay(1000);
+
+    chassis.moveToPose(side*23.7, 24.4, side*-45, 1000);
+    chassis.waitUntilDone();
+    chassis.moveToPose(17.7, 31.4, side*-45, 1000);
+    autoIntakeEnabled = true;
+    feeder.extend();
+    chassis.waitUntilDone();
+    autoIntakeEnabled = false;
+
+    chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
+    pros::delay(500);
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+
+    if (side == -1) bottomOuttake();
+    else midOuttake();
+    pros::delay(1000);
+    
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
     // chassis.waitUntil(12);
     // autoIntakeEnabled = true;
