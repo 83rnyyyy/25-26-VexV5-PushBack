@@ -202,42 +202,42 @@ void competition_initialize() {}
 ASSET(example_txt);
 
 void autonomous() {
-    // autoIntakeEnabled = false;
-    // rejectMid = true;
+    autoIntakeEnabled = false;
+    rejectMid = true;
 
 
-    // chassis.setPose(0, 0, 0);
-    // chassis.moveToPose(side*9.69, 15, side*45, 1000);
-    // chassis.waitUntil(12);
-    // autoIntakeEnabled = true;
-    // chassis.waitUntilDone();
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPose(side*9.69, 15, side*45, 1000);
+    chassis.waitUntil(12);
+    autoIntakeEnabled = true;
+    chassis.waitUntilDone();
 
-    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
-    // pros::delay(500);
-    // autoIntakeEnabled = false;
-    // chassis.waitUntilDone();
+    chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
+    pros::delay(500);
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
 
-    // if (side == -1) bottomOuttake();
-    // else midOuttake();
-    // pros::delay(1000);
+    if (side == -1) bottomOuttake();
+    else midOuttake();
+    pros::delay(1000);
 
-    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
-    // pros::delay(1000);
+    chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    pros::delay(1000);
 
-    // autoIntakeEnabled = true;
-    // feeder.extend();
-    // chassis.waitUntilDone();
-    // pros::delay(1000);
-    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
-    // autoIntakeEnabled = false;
-    // chassis.waitUntilDone();
-    // topOuttake();
-    // pros::delay(1000);
+    autoIntakeEnabled = true;
+    feeder.extend();
+    chassis.waitUntilDone();
+    pros::delay(1000);
+    chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    topOuttake();
+    pros::delay(1000);
 
-    // chassis.moveToPose(side*55, 10, 180, 1000);
-    // wing.extend();
-    // chassis.waitUntilDone();
-    // chassis.moveToPose(side*55, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
+    chassis.moveToPose(side*55, 10, 180, 1000);
+    wing.extend();
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*55, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
     
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
