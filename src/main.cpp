@@ -79,19 +79,19 @@ void defaultCollector() {
 
 void intake() {
     defaultCollector();
-    if (!stopper.is_extended()) stopper.extend()
+    if (!stopper.is_extended()) stopper.extend();
 }
 
 void topOuttake() {
     defaultCollector();
-    if (stopper.is_extended()) stopper.retract()
-    if (!toggler.is_extended()) toggler.extend()
+    if (stopper.is_extended()) stopper.retract();
+    if (!toggler.is_extended()) toggler.extend();
 }
 
 void midOuttake() {
     defaultCollector();
-    if (stopper.is_extended()) stopper.retract()
-    if (toggler.is_extended()) toggler.retract()
+    if (stopper.is_extended()) stopper.retract();
+    if (toggler.is_extended()) toggler.retract();
 }
 
 void bottomOuttake() {
