@@ -25,6 +25,8 @@ pros::Imu imu(10);
 // pneumatics
 pros::adi::Pneumatics wing('A', false);
 pros::adi::Pneumatics feeder('H', false);
+pros::adi::Pneumatics toggler('B', true); // default to top
+pros::adi::Pneumatics stopper('C', true);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
@@ -91,6 +93,9 @@ void stopAllCollectors() {
     FirstCollector.move(0);
     SecondCollector.move(0);
     ThirdCollector.move(0);
+    if (!stopper.is_extended()) {
+        stopper.extend();
+    }
 }
 
 void intakeWithDet() {
@@ -287,8 +292,8 @@ void opcontrol() {
         if (manual) {
             if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 intake();
-            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                midOuttake();
+            // } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            //     midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 bottomOuttake();
             } else {
