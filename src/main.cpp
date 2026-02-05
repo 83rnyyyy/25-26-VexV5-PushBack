@@ -213,7 +213,7 @@ void autonomous() {
     chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-    topOuttake();
+    intake();
     pros::delay(1000);
 
     chassis.moveToPose(side*23.7, 24.4, side*-45, 1000);
@@ -229,8 +229,9 @@ void autonomous() {
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
 
-    if (side == -1) bottomOuttake();
-    else midOuttake();
+    // if (side == -1) bottomOuttake();
+    // else midOuttake();
+    bottomOuttake();
     pros::delay(1000);
     
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
