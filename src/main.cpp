@@ -71,22 +71,34 @@ int colourDet() {
     return 0;
 }
 
-void intake() {
+void defaultCollector() {
     FirstCollector.move(-127);
     SecondCollector.move(-127);
     ThirdCollector.move(127);
 }
 
-// void midOuttake() {
-//     SecondCollector.move(127);
-//     FirstCollector.move(127);
-//     ThirdCollector.move(127);
-// }
+void intake() {
+    defaultCollector();
+    if (!stopper.is_extended()) stopper.extend()
+}
+
+void topOuttake() {
+    defaultCollector();
+    if (stopper.is_extended()) stopper.retract()
+    if (!toggler.is_extended()) toggler.extend()
+}
+
+void midOuttake() {
+    defaultCollector();
+    if (stopper.is_extended()) stopper.retract()
+    if (toggler.is_extended()) toggler.retract()
+}
 
 void bottomOuttake() {
     FirstCollector.move(127);
     SecondCollector.move(127);
     ThirdCollector.move(-127);
+    // if (stopper.is_extended()) stopper.retract()
 }
 
 void stopAllCollectors() {
