@@ -93,9 +93,9 @@ void stopAllCollectors() {
     FirstCollector.move(0);
     SecondCollector.move(0);
     ThirdCollector.move(0);
-    if (!stopper.is_extended()) {
-        stopper.extend();
-    }
+    // if (!stopper.is_extended()) {
+    //     stopper.extend();
+    // }
 }
 
 void intakeWithDet() {
