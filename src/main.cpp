@@ -70,25 +70,21 @@ int colourDet() {
 }
 
 void intake() {
-    FirstCollector.move(127);
+    FirstCollector.move(-127);
     SecondCollector.move(-127);
-}
-
-void topOuttake() {
-    SecondCollector.move(127);
-    FirstCollector.move(127);
-    ThirdCollector.move(-127);
-}
-
-void midOuttake() {
-    SecondCollector.move(127);
-    FirstCollector.move(127);
     ThirdCollector.move(127);
 }
 
+// void midOuttake() {
+//     SecondCollector.move(127);
+//     FirstCollector.move(127);
+//     ThirdCollector.move(127);
+// }
+
 void bottomOuttake() {
+    FirstCollector.move(127);
     SecondCollector.move(127);
-    FirstCollector.move(-127);
+    ThirdCollector.move(-127);
 }
 
 void stopAllCollectors() {
@@ -325,8 +321,6 @@ void opcontrol() {
                 midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 bottomOuttake();
-            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-                topOuttake();
             } else {
                 stopAllCollectors();
             }
