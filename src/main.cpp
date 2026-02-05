@@ -203,14 +203,14 @@ void autonomous() {
 
     chassis.setPose(side*7.826, 13.319, side*90); // TODO: get coordinates relative of origin pos
 
-    chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // feeder tube
     pros::delay(1000);
-
     autoIntakeEnabled = true;
     feeder.extend();
     chassis.waitUntilDone();
     pros::delay(1000);
-    chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+
+    chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0}); // long goal
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
     intake();
@@ -218,13 +218,13 @@ void autonomous() {
 
     chassis.moveToPose(side*23.7, 24.4, side*-45, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPose(17.7, 31.4, side*-45, 1000);
+    chassis.moveToPose(17.7, 31.4, side*-45, 1000); // 3 balls
     autoIntakeEnabled = true;
     feeder.extend();
     chassis.waitUntilDone();
     autoIntakeEnabled = false;
 
-    chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
+    chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true}); // middle goal
     pros::delay(500);
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
@@ -232,6 +232,13 @@ void autonomous() {
     // if (side == -1) bottomOuttake();
     // else midOuttake();
     bottomOuttake();
+    pros::delay(1000);
+
+    // move to start of pink (get 3 balls)
+    chassis.moveToPose(side*-49.23, 18.73, 180, 1000, {.forwards = false, .lead = 0}); // long goal
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    intake();
     pros::delay(1000);
     
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
