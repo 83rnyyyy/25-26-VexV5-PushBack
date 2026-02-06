@@ -25,6 +25,8 @@ pros::Imu imu(10);
 // pneumatics
 pros::adi::Pneumatics wing('A', false);
 pros::adi::Pneumatics feeder('H', false);
+pros::adi::Pneumatics toggler('B', true); // default to top
+pros::adi::Pneumatics stopper('C', true);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
@@ -69,28 +71,43 @@ int colourDet() {
     return 0;
 }
 
-void intake() {
+void defaultCollector() {
     FirstCollector.move(-127);
     SecondCollector.move(-127);
     ThirdCollector.move(127);
 }
 
-// void midOuttake() {
-//     SecondCollector.move(127);
-//     FirstCollector.move(127);
-//     ThirdCollector.move(127);
-// }
+void intake() {
+    defaultCollector();
+    if (!stopper.is_extended()) stopper.extend();
+}
+
+void topOuttake() {
+    defaultCollector();
+    if (stopper.is_extended()) stopper.retract();
+    if (!toggler.is_extended()) toggler.extend();
+}
+
+void midOuttake() {
+    defaultCollector();
+    if (stopper.is_extended()) stopper.retract();
+    if (toggler.is_extended()) toggler.retract();
+}
 
 void bottomOuttake() {
     FirstCollector.move(127);
     SecondCollector.move(127);
     ThirdCollector.move(-127);
+    // if (stopper.is_extended()) stopper.retract()
 }
 
 void stopAllCollectors() {
     FirstCollector.move(0);
     SecondCollector.move(0);
     ThirdCollector.move(0);
+    // if (!stopper.is_extended()) {
+    //     stopper.extend();
+    // }
 }
 
 void intakeWithDet() {
@@ -111,8 +128,9 @@ void intakeWithDet() {
 
     int c = colourDet();
     if (c == reject) {
-        if (rejectMid) midOuttake();
-        else bottomOuttake();
+        // if (rejectMid) midOuttake();
+        // else bottomOuttake();
+        bottomOuttake();
     } else if (c == keep) intake();
 }
 
@@ -142,8 +160,9 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
 
         if (c == reject) {
             // eject until the rejected color is gone (or auto disabled)
-            if (rejectMid) midOuttake();
-            else bottomOuttake();
+            // if (rejectMid) midOuttake();
+            // else bottomOuttake();
+            bottomOuttake();
             while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
             pros::delay(50);
             if (rejectMid) pros::delay(500);
@@ -325,8 +344,8 @@ void opcontrol() {
         if (manual) {
             if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 intake();
-            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                midOuttake();
+            // } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            //     midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 bottomOuttake();
             } else {
