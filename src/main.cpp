@@ -199,12 +199,11 @@ ASSET(example_txt);
 
 void autonomous() {
     autoIntakeEnabled = false;
-    rejectMid = true;
-
-
+    
     chassis.setPose(0, 0, 0);
     chassis.moveToPose(side*9.69, 15, side*45, 1000);
     chassis.waitUntil(12);
+    feeder.extend();
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
 
@@ -212,9 +211,6 @@ void autonomous() {
     pros::delay(500);
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-
-    // if (side == -1) bottomOuttake();
-    // else midOuttake();
     bottomOuttake();
     pros::delay(1000);
 
@@ -231,10 +227,10 @@ void autonomous() {
     intake();
     pros::delay(1000);
 
-    chassis.moveToPose(side*55, 10, 180, 1000);
+    chassis.moveToPose(side*37, 10, 180, 1000);
     wing.extend();
     chassis.waitUntilDone();
-    chassis.moveToPose(side*55, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
+    chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
     
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
