@@ -18,6 +18,8 @@
      Third Collector 	  |    11 // FTop
 
           Wing            |    E
-         Feeder           |    H  
+         Toggler          |    F
+         Stopper          |    !
+         Feeder           |    G 
        Color Sensor	      |    19
 
