@@ -287,6 +287,8 @@ void autonomous() {
 bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
+bool stopperExtended = false;
+bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
 int yModifer = driveDirection ? 1 : -1;
 void opcontrol() {
@@ -295,7 +297,7 @@ void opcontrol() {
 
     while (true) {
         int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
@@ -318,7 +320,7 @@ void opcontrol() {
         }
 
         // PNEUMATICS
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
             wingExtended = !wingExtended;
             if (wingExtended) {
                 wing.extend();
@@ -332,6 +334,22 @@ void opcontrol() {
                 feeder.extend();
             } else {
                 feeder.retract();
+            }
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+            stopperExtended = !stopperExtended;
+            if (stopperExtended) {
+                stopper.extend();
+            } else {
+                stopper.retract();
+            }
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+            togglerExtended = !togglerExtended;
+            if (togglerExtended) {
+                toggler.extend();
+            } else {
+                toggler.retract();
             }
         }
 
