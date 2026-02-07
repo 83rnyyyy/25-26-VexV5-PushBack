@@ -23,7 +23,7 @@ pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('A', false);
+pros::adi::Pneumatics wing('E', false);
 pros::adi::Pneumatics feeder('H', false);
 pros::adi::Pneumatics toggler('B', true); // default to top
 pros::adi::Pneumatics stopper('C', true);
