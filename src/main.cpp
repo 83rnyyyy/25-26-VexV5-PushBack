@@ -295,7 +295,7 @@ void opcontrol() {
 
     while (true) {
         int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightX = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
