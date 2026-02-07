@@ -23,7 +23,7 @@ pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('A', false);
+pros::adi::Pneumatics wing('E', false);
 pros::adi::Pneumatics feeder('H', false);
 pros::adi::Pneumatics toggler('B', true); // default to top
 pros::adi::Pneumatics stopper('C', true);
@@ -333,7 +333,7 @@ void opcontrol() {
 
     while (true) {
         int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightX = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
