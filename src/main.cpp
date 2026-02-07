@@ -287,8 +287,8 @@ void autonomous() {
 bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
-bool stopperExtended = false;
-bool togglerExtended = false;
+bool stopperExtended = true;
+bool togglerExtended = true;
 bool driveDirection = true; // default direction, brain side
 int yModifer = driveDirection ? 1 : -1;
 void opcontrol() {
