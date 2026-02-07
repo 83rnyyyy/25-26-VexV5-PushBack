@@ -219,6 +219,7 @@ ASSET(example_txt);
 void autonomous() {
     autoIntakeEnabled = false;
     
+    // Get the three balls
     chassis.setPose(0, 0, 0);
     chassis.moveToPose(side*9.69, 15, side*45, 1000);
     chassis.waitUntil(12);
@@ -226,6 +227,7 @@ void autonomous() {
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
 
+    // Score the bottom tube of the middle goal
     chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
     pros::delay(500);
     autoIntakeEnabled = false;
@@ -233,9 +235,11 @@ void autonomous() {
     bottomOuttake();
     pros::delay(1000);
 
+    // Move to between long goal and dispenser
     chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
     pros::delay(1000);
 
+    // Collect balls from dispenser
     autoIntakeEnabled = true;
     feeder.extend();
     chassis.waitUntilDone();
@@ -246,6 +250,7 @@ void autonomous() {
     intake();
     pros::delay(1000);
 
+    // 🧐
     chassis.moveToPose(side*37, 10, 180, 1000);
     wing.extend();
     chassis.waitUntilDone();
