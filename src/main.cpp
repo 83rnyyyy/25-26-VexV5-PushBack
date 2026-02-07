@@ -83,15 +83,16 @@ void intake() {
 }
 
 void topOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (!toggler.is_extended()) toggler.extend();
+    defaultCollector();
+    
 }
 
 void midOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (toggler.is_extended()) toggler.retract();
+    defaultCollector();
 }
 
 void bottomOuttake() {
@@ -219,6 +220,7 @@ ASSET(example_txt);
 void autonomous() {
     autoIntakeEnabled = false;
     
+    // Get the three balls
     chassis.setPose(0, 0, 0);
     chassis.moveToPose(side*9.69, 15, side*45, 1000);
     chassis.waitUntil(12);
@@ -226,16 +228,20 @@ void autonomous() {
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
 
+    // Score the bottom tube of the middle goal
     chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
     pros::delay(500);
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-    midOuttake();
+    if (side) bottomOuttake();
+    else midOuttake();
     pros::delay(1000);
 
+    // Move to between long goal and dispenser
     chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
     pros::delay(1000);
 
+    // Collect balls from dispenser
     autoIntakeEnabled = true;
     feeder.extend();
     chassis.waitUntilDone();
@@ -246,6 +252,7 @@ void autonomous() {
     intake();
     pros::delay(1000);
 
+    // 🧐
     chassis.moveToPose(side*37, 10, 180, 1000);
     wing.extend();
     chassis.waitUntilDone();
@@ -284,14 +291,16 @@ void autonomous() {
 bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
+bool driveDirection = true; // default direction, brain side
+int yModifer = driveDirection ? 1 : -1;
 void opcontrol() {
     autoIntakeEnabled = false;
     rejectMid = true;
 
     while (true) {
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        chassis.arcade(leftY, rightX);
+        chassis.arcade(leftY, -rightX);
 
         // toggle manual/auto (debounced)
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
@@ -328,6 +337,11 @@ void opcontrol() {
             } else {
                 feeder.retract();
             }
+        }
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+            driveDirection = !driveDirection;
+            yModifer = driveDirection ? 1 : -1;
         }
 
         pros::delay(25);
