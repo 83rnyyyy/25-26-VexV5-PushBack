@@ -24,8 +24,8 @@ pros::Imu imu(10);
 
 // pneumatics
 pros::adi::Pneumatics wing('E', false);
-pros::adi::Pneumatics feeder('H', false);
-pros::adi::Pneumatics toggler('B', true); // default to top
+pros::adi::Pneumatics feeder('G', false);
+pros::adi::Pneumatics toggler('F', true); // default to top
 pros::adi::Pneumatics stopper('C', true);
 
 // drivetrain settings
