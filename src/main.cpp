@@ -26,7 +26,7 @@ pros::Imu imu(10);
 pros::adi::Pneumatics wing('E', false);
 pros::adi::Pneumatics feeder('G', false);
 pros::adi::Pneumatics toggler('F', true); // default to top
-pros::adi::Pneumatics stopper('C', true);
+pros::adi::Pneumatics stopper('C', false);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
@@ -287,7 +287,7 @@ void autonomous() {
 bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
-bool stopperExtended = true;
+bool stopperExtended = false;
 bool togglerExtended = true;
 bool driveDirection = true; // default direction, brain side
 int yModifer = driveDirection ? 1 : -1;
