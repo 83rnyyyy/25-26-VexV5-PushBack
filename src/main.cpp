@@ -287,12 +287,14 @@ void autonomous() {
 bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
+bool driveDirection = true; // default direction, brain side
+int yModifer = driveDirection ? 1 : -1;
 void opcontrol() {
     autoIntakeEnabled = false;
     rejectMid = true;
 
     while (true) {
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
@@ -331,6 +333,11 @@ void opcontrol() {
             } else {
                 feeder.retract();
             }
+        }
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+            driveDirection = !driveDirection;
+            yModifer = driveDirection ? 1 : -1;
         }
 
         pros::delay(25);
