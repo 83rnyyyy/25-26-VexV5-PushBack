@@ -45,8 +45,8 @@ lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.5);
 lemlib::OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 
 // drive curves
-lemlib::ExpoDriveCurve throttleCurve(3, 10, 1.019);
-lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
+lemlib::ExpoDriveCurve throttleCurve(5, 10, 1.019);
+lemlib::ExpoDriveCurve steerCurve(5, 10, 1.019);
 
 // chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
