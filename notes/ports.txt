@@ -17,7 +17,7 @@
     Second Collector	  |    12 // Back
      Third Collector 	  |    11 // FTop
 
-          Hood            |    A 
+          Wing            |    E
          Feeder           |    H  
        Color Sensor	      |    19
 
