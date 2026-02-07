@@ -232,7 +232,8 @@ void autonomous() {
     pros::delay(500);
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
-    bottomOuttake();
+    if (side) bottomOuttake();
+    else midOuttake();
     pros::delay(1000);
 
     // Move to between long goal and dispenser
