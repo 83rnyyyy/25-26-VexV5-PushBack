@@ -83,15 +83,16 @@ void intake() {
 }
 
 void topOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (!toggler.is_extended()) toggler.extend();
+    defaultCollector();
+    
 }
 
 void midOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (toggler.is_extended()) toggler.retract();
+    defaultCollector();
 }
 
 void bottomOuttake() {
