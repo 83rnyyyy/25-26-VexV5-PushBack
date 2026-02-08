@@ -23,10 +23,10 @@ pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('E', false);
-pros::adi::Pneumatics feeder('G', false);
-pros::adi::Pneumatics toggler('F', true); // default to top
-pros::adi::Pneumatics stopper('C', false);
+pros::adi::Pneumatics wing('E', true);
+pros::adi::Pneumatics feeder('G', true);
+pros::adi::Pneumatics toggler('F', false); // default to top
+pros::adi::Pneumatics stopper('H', true);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
@@ -211,7 +211,11 @@ void initialize() {
     static pros::Task autoIntakeTask(intakeTask);
 }
 
-void disabled() {}
+void disabled() {
+  feeder.retract();
+  wing.retract();
+  wing.set_value(false);
+}
 void competition_initialize() {}
 
 ASSET(example_txt);
@@ -285,10 +289,10 @@ void autonomous() {
 // -------------------- Driver Control --------------------
 
 bool manual = true;
-bool feederExtended = false;
-bool wingExtended = false;
-bool stopperExtended = false;
-bool togglerExtended = true;
+bool feederExtended = true;
+bool wingExtended = true;
+bool stopperExtended = true;
+bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
 int yModifer = driveDirection ? 1 : -1;
 void opcontrol() {
@@ -308,12 +312,14 @@ void opcontrol() {
         }
 
         if (manual) {
-            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+                topOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 intake();
-            // } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            //     midOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                midOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                bottomOuttake();
+                topOuttake();
             } else {
                 stopAllCollectors();
             }
@@ -336,7 +342,7 @@ void opcontrol() {
                 feeder.retract();
             }
         }
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
             stopperExtended = !stopperExtended;
             if (stopperExtended) {
                 stopper.extend();
