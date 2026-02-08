@@ -10,8 +10,8 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({2, -4, 6}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({-3, -5, 7}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // collectors
 pros::Motor FirstCollector(16);   // front bottom collector
@@ -32,13 +32,31 @@ pros::adi::Pneumatics stopper('H', true);
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 
 // controllers
-lemlib::ControllerSettings linearController(13, 0, 51, 0, 0, 0, 0, 0, 0);
-lemlib::ControllerSettings angularController(5, 0, 50, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings linearController(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              10, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+);
+lemlib::ControllerSettings angularController(5, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              32, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+);
 
 // tracking wheels
 pros::Rotation horizontalEnc(20);
 pros::Rotation verticalEnc(-9);
-lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, -5.75);
+lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, 1);
 lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.5);
 
 // odom sensors
@@ -212,20 +230,22 @@ void initialize() {
 }
 
 void disabled() {
-  feeder.retract();
-  wing.retract();
-  wing.set_value(false);
+    feeder.retract();
+    wing.retract();
+    wing.set_value(false);
 }
 void competition_initialize() {}
 
 ASSET(example_txt);
 
 void autonomous() {
-    // autoIntakeEnabled = false;
-    // rejectMid = true;
+    autoIntakeEnabled = false;
+    rejectMid = true;
 
 
-    // chassis.setPose(0, 0, 0);
+    chassis.setPose(0, 0, 0);
+    // chassis.moveToPoint(0, 24.5, 9999);
+    chassis.turnToHeading(180, 99999);
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
     // chassis.waitUntil(12);
     // autoIntakeEnabled = true;
