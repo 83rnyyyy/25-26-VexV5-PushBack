@@ -245,7 +245,7 @@ void autonomous() {
 
     chassis.setPose(0, 0, 0);
     // chassis.moveToPoint(0, 24.5, 9999);
-    chassis.turnToHeading(180, 99999);
+    chassis.turnToHeading(180, 9999);
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
     // chassis.waitUntil(12);
     // autoIntakeEnabled = true;
