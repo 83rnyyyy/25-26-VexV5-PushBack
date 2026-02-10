@@ -70,8 +70,8 @@ lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
 
 // -------------------- QUICK CONFIGURATION --------------------
-constexpr bool allianceIsBlue = true; // true = keep BLUE, false = keep RED
-constexpr int side = -1; // 1 = right, -1 = left
+constexpr bool allianceIsBlue = false; // true = keep BLUE, false = keep RED
+constexpr int side = 1; // 1 = right, -1 = left
 
 // -------------------- Intake / Color Sort --------------------
 
@@ -80,6 +80,7 @@ volatile bool autoIntakeEnabled = false;
 volatile bool rejectMid = true;
 
 int colourDet() {
+    return allianceIsBlue ? 2 : 1;
     int prox = optical.get_proximity();
     if (prox < PROX_THRESH) return 0;
 
