@@ -16,7 +16,7 @@ pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 // collectors
 pros::Motor FirstCollector(16);   // front bottom collector
 pros::Motor SecondCollector(12);  // back collector
-pros::Motor ThirdCollector(11);   // front top collector
+pros::Motor ThirdCollector(-11);   // front top collector
 
 // sensors
 pros::Optical optical(19);
@@ -42,9 +42,9 @@ lemlib::ControllerSettings linearController(10, // proportional gain (kP)
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(5, // proportional gain (kP)
+lemlib::ControllerSettings angularController(5.5, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              32, // derivative gain (kD)
+                                              56, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -56,15 +56,15 @@ lemlib::ControllerSettings angularController(5, // proportional gain (kP)
 // tracking wheels
 pros::Rotation horizontalEnc(20);
 pros::Rotation verticalEnc(-9);
-lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, 1);
-lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.5);
+lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, 0.75);
+lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.75);
 
 // odom sensors
 lemlib::OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 
 // drive curves
-lemlib::ExpoDriveCurve throttleCurve(5, 10, 1.019);
-lemlib::ExpoDriveCurve steerCurve(5, 10, 1.019);
+lemlib::ExpoDriveCurve throttleCurve(3, 10, 1.019);
+lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 
 // chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
@@ -332,8 +332,8 @@ void opcontrol() {
         }
 
         if (manual) {
-            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                topOuttake();
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+                bottomOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 intake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
