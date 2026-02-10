@@ -243,42 +243,43 @@ void autonomous() {
     autoIntakeEnabled = false;
     
     // Get the three balls
-    chassis.setPose(0, 0, 0);
-    chassis.moveToPose(side*9.69, 15, side*45, 1000);
-    chassis.waitUntil(12);
-    feeder.extend();
-    autoIntakeEnabled = true;
+    chassis.setPose(0, 2, 0);
+    chassis.moveToPose(side*12.2, 10.1, side*45, 1000);
     chassis.waitUntilDone();
+    autoIntakeEnabled = true;
+    feeder.extend();
+    chassis.moveToPoint(side*21.7, 18.1, side*45, 1000, {.maxSpeed = 100});
 
     // Score the bottom tube of the middle goal
-    chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
-    pros::delay(500);
-    autoIntakeEnabled = false;
-    chassis.waitUntilDone();
-    if (side) bottomOuttake();
-    else midOuttake();
-    pros::delay(1000);
+    // chassis.turnToPoint(side*6, 48.5, 1000)
+    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.minSpeed = 127});
+    // pros::delay(500);
+    // autoIntakeEnabled = false;
+    // chassis.waitUntilDone();
+    // if (side) bottomOuttake();
+    // else midOuttake();
+    // pros::delay(1000);
 
-    // Move to between long goal and dispenser
-    chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
-    pros::delay(1000);
+    // // Move to between long goal and dispenser
+    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    // pros::delay(1000);
 
-    // Collect balls from dispenser
-    autoIntakeEnabled = true;
-    feeder.extend();
-    chassis.waitUntilDone();
-    pros::delay(1000);
-    chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
-    autoIntakeEnabled = false;
-    chassis.waitUntilDone();
-    intake();
-    pros::delay(1000);
+    // // Collect balls from dispenser
+    // autoIntakeEnabled = true;
+    // feeder.extend();
+    // chassis.waitUntilDone();
+    // pros::delay(1000);
+    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+    // autoIntakeEnabled = false;
+    // chassis.waitUntilDone();
+    // intake();
+    // pros::delay(1000);
 
-    // 🧐
-    chassis.moveToPose(side*37, 10, 180, 1000);
-    wing.extend();
-    chassis.waitUntilDone();
-    chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
+    // // 🧐
+    // chassis.moveToPose(side*37, 10, 180, 1000);
+    // wing.extend();
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
     
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
