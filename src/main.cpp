@@ -10,43 +10,61 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({2, -4, 6}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({-3, -5, 7}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // collectors
 pros::Motor FirstCollector(16);   // front bottom collector
 pros::Motor SecondCollector(12);  // back collector
-pros::Motor ThirdCollector(11);   // front top collector
+pros::Motor ThirdCollector(-11);   // front top collector
 
 // sensors
 pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('E', false);
-pros::adi::Pneumatics feeder('G', false);
-pros::adi::Pneumatics toggler('F', true); // default to top
-pros::adi::Pneumatics stopper('C', false);
+pros::adi::Pneumatics wing('E', true);
+pros::adi::Pneumatics feeder('G', true);
+pros::adi::Pneumatics toggler('F', false); // default to top
+pros::adi::Pneumatics stopper('H', true);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 
 // controllers
-lemlib::ControllerSettings linearController(13, 0, 51, 0, 0, 0, 0, 0, 0);
-lemlib::ControllerSettings angularController(5, 0, 50, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings linearController(11, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              25, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+);
+lemlib::ControllerSettings angularController(5.5, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              56, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+);
 
 // tracking wheels
 pros::Rotation horizontalEnc(20);
 pros::Rotation verticalEnc(-9);
-lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, -5.75);
-lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.5);
+lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_2, 0.75);
+lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -2.75);
 
 // odom sensors
 lemlib::OdomSensors sensors(&vertical, nullptr, &horizontal, nullptr, &imu);
 
 // drive curves
-lemlib::ExpoDriveCurve throttleCurve(5, 10, 1.019);
-lemlib::ExpoDriveCurve steerCurve(5, 10, 1.019);
+lemlib::ExpoDriveCurve throttleCurve(3, 10, 1.019);
+lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 
 // chassis
 lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
@@ -212,7 +230,11 @@ void initialize() {
     static pros::Task autoIntakeTask(intakeTask);
 }
 
-void disabled() {}
+void disabled() {
+    feeder.retract();
+    wing.retract();
+    wing.set_value(false);
+}
 void competition_initialize() {}
 
 ASSET(example_txt);
@@ -289,19 +311,19 @@ void autonomous() {
 // -------------------- Driver Control --------------------
 
 bool manual = true;
-bool feederExtended = false;
-bool wingExtended = false;
-bool stopperExtended = false;
-bool togglerExtended = true;
+bool feederExtended = true;
+bool wingExtended = true;
+bool stopperExtended = true;
+bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
-int yModifer = driveDirection ? 1 : -1;
+int modifier = driveDirection ? 1 : -1;
 void opcontrol() {
     autoIntakeEnabled = false;
     rejectMid = true;
 
     while (true) {
-        int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int leftY = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightX = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
@@ -312,12 +334,14 @@ void opcontrol() {
         }
 
         if (manual) {
-            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-                intake();
-            // } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            //     midOuttake();
-            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
                 bottomOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+                intake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                midOuttake();
+            } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+                topOuttake();
             } else {
                 stopAllCollectors();
             }
@@ -340,7 +364,7 @@ void opcontrol() {
                 feeder.retract();
             }
         }
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
             stopperExtended = !stopperExtended;
             if (stopperExtended) {
                 stopper.extend();
@@ -359,7 +383,7 @@ void opcontrol() {
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             driveDirection = !driveDirection;
-            yModifer = driveDirection ? 1 : -1;
+            modifier = driveDirection ? 1 : -1;
         }
 
         pros::delay(25);
