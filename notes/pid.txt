@@ -1,10 +1,7 @@
 LINEAR ------------------------
 
 kP|kD|OSC|
-10|03|?  | overshoot
-10|06|?  | overshoot
-10|09|?  | overshoot
-10|10|?  | 
+10|03|0
 
 ANGULAR ------------------------
 

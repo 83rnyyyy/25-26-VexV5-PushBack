@@ -32,9 +32,9 @@ pros::adi::Pneumatics stopper('H', true);
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 
 // controllers
-lemlib::ControllerSettings linearController(10, // proportional gain (kP)
+lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              10, // derivative gain (kD)
+                                              25, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -239,13 +239,11 @@ void competition_initialize() {}
 ASSET(example_txt);
 
 void autonomous() {
-    autoIntakeEnabled = false;
-    rejectMid = true;
+    // autoIntakeEnabled = false;
+    // rejectMid = true;
 
 
-    chassis.setPose(0, 0, 0);
-    // chassis.moveToPoint(0, 24.5, 9999);
-    chassis.turnToHeading(180, 9999);
+    // chassis.setPose(0, 0, 0);
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
     // chassis.waitUntil(12);
     // autoIntakeEnabled = true;
@@ -314,14 +312,14 @@ bool wingExtended = true;
 bool stopperExtended = true;
 bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
-int yModifer = driveDirection ? 1 : -1;
+int modifier = driveDirection ? 1 : -1;
 void opcontrol() {
     autoIntakeEnabled = false;
     rejectMid = true;
 
     while (true) {
-        int leftY = yModifer*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int leftY = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightX = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
@@ -332,7 +330,7 @@ void opcontrol() {
         }
 
         if (manual) {
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
                 bottomOuttake();
             } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
                 intake();
@@ -381,7 +379,7 @@ void opcontrol() {
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             driveDirection = !driveDirection;
-            yModifer = driveDirection ? 1 : -1;
+            modifier = driveDirection ? 1 : -1;
         }
 
         pros::delay(25);
