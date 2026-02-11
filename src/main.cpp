@@ -245,12 +245,12 @@ void autonomous() {
     
     // Get the three balls
     chassis.setPose(0, 0, 0);
-    chassis.moveToPose(side*2.5, 17, side*45, 1000, {.minSpeed = 127});
+    chassis.moveToPose(10, 25, 25, 1000);
     chassis.waitUntilDone();
-    autoIntakeEnabled = true;
-    feeder.extend();
-    chassis.moveToPose(side*9.6, 24, side*45, 1000, {.maxSpeed = 100});
-    chassis.waitUntilDone();
+    // autoIntakeEnabled = true;
+    // feeder.extend();
+    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.maxSpeed = 100});
+    // chassis.waitUntilDone();
 
     // Score the bottom tube of the middle goal
     // chassis.turnToPoint(side*6, 48.5, 1000)
