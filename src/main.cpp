@@ -246,11 +246,11 @@ void autonomous() {
     // *** NOT WORKING ***
     // Get the three balls
     // chassis.setPose(0, 0, 0);
-    // chassis.moveToPose(10, 25, 25, 1000);
+    // chassis.moveToPose(10, 25, 25, 1000, {.horizontalDrift = 8});
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // feeder.extend();
-    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.maxSpeed = 100});
+    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.horizontalDrift = 8, .maxSpeed = 100});
     // chassis.waitUntilDone();
     // *** END NOT WORKING ***
 
@@ -259,15 +259,15 @@ void autonomous() {
     chassis.waitUntilDone();
     chassis.turnToHeading(side*45, 500); // 90
     chassis.waitUntilDone();
-    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
+    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.horizontalDrift = 8, .lead = 0});
     chassis.waitUntilDone();
-    chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
     // chassis.turnToHeading(side*135, 800);
     // chassis.waitUntilDone();
 
     // Score the bottom tube of the middle goal
     // chassis.turnToPoint(side*6, 48.5, 1000)
-    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.minSpeed = 127});
+    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.horizontalDrift = 8, .minSpeed = 127});
     // pros::delay(500);
     // autoIntakeEnabled = false;
     // chassis.waitUntilDone();
@@ -276,7 +276,7 @@ void autonomous() {
     // pros::delay(1000);
 
     // // Move to between long goal and dispenser
-    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.horizontalDrift = 8, .minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
     // pros::delay(1000);
 
     // // Collect balls from dispenser
@@ -284,7 +284,7 @@ void autonomous() {
     // feeder.extend();
     // chassis.waitUntilDone();
     // pros::delay(1000);
-    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .horizontalDrift = 8, .lead = 0});
     // autoIntakeEnabled = false;
     // chassis.waitUntilDone();
     // intake();
@@ -294,8 +294,9 @@ void autonomous() {
     // chassis.moveToPose(side*37, 10, 180, 1000);
     // wing.extend();
     // chassis.waitUntilDone();
-    // chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
-    
+    // chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .horizontalDrift = 8, .lead = 0, .minSpeed = 127});
+
+    // *** OLD CODE ****************
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
     // chassis.waitUntilDone();
