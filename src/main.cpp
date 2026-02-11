@@ -255,19 +255,59 @@ void autonomous() {
     // *** END NOT WORKING ***
 
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(0, 6.674, 500); // 6.674
+    chassis.moveToPoint(0, 28.4, 1000);
     chassis.waitUntilDone();
-    chassis.turnToHeading(side*45, 500); // 90
+    chassis.turnToHeading(90, 1000);
+    autoIntakeEnabled = true;
+    feeder.extend();
     chassis.waitUntilDone();
-    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.horizontalDrift = 8, .lead = 0});
+    chassis.moveToPoint(12, 28.4, 1000, {.minSpeed = 127});
     chassis.waitUntilDone();
-    chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    pros::delay(2000);
+
+    chassis.moveToPoint(20, 28.4, 1000, {.forwards = false, .minSpeed = 127});
+    feeder.retract();
+    chassis.waitUntilDone();
+    autoIntakeEnabled = false;
+    topOuttake();
+    pros::delay(2000);
+    stopAllCollectors();
+
+    chassis.moveToPoint(2.3, 28.4, 1000);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(-135, 1000);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(17.8, 43.9, 1000);
+    chassis.waitUntilDone();
+    autoIntakeEnabled = true;
+    chassis.moveToPoint(35.6, 61.7, 1000, {.maxSpeed = 100});
+    chassis.waitUntilDone()
+    autoIntakeEnabled = false;
+    midOuttake();
+    pros::delay(2000);
+
+    chassis.moveToPoint(11, 39.4, 1000);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(60, 39.4, 1000, {.minSpeed = 127});
+    wing.retract();
+    chassis.waitUntilDone();
+    
+
+
+
+    // chassis.moveToPoint(0, 6.674, 500); // 6.674
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(side*45, 500); // 90
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(side*8.933, 15.607, 1000, {.horizontalDrift = 8, .lead = 0});
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(side*17.73, 27.53, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
     // chassis.turnToHeading(side*135, 800);
     // chassis.waitUntilDone();
 
-    // Score the bottom tube of the middle goal
+    // // Score the bottom tube of the middle goal
     // chassis.turnToPoint(side*6, 48.5, 1000)
-    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.horizontalDrift = 8, .minSpeed = 127});
+    // chassis.moveToPoint(side*6, 48.5, 1000, {.horizontalDrift = 8, .minSpeed = 127});
     // pros::delay(500);
     // autoIntakeEnabled = false;
     // chassis.waitUntilDone();
