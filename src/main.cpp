@@ -242,14 +242,27 @@ ASSET(example_txt);
 
 void autonomous() {
     autoIntakeEnabled = false;
-    
+
+    // *** NOT WORKING ***
     // Get the three balls
-    chassis.setPose(0, 0, 0);
-    chassis.moveToPose(10, 25, 25, 1000);
-    chassis.waitUntilDone();
+    // chassis.setPose(0, 0, 0);
+    // chassis.moveToPose(10, 25, 25, 1000);
+    // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // feeder.extend();
     // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.maxSpeed = 100});
+    // chassis.waitUntilDone();
+    // *** END NOT WORKING ***
+
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPoint(0, 6.674, 500); // 6.674
+    chassis.waitUntilDone();
+    chassis.turnToHeading(side*45, 500); // 90
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.lead = 0});
+    chassis.waitUntilDone();
+    chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    // chassis.turnToHeading(side*135, 800);
     // chassis.waitUntilDone();
 
     // Score the bottom tube of the middle goal
