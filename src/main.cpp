@@ -23,8 +23,8 @@ pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('E', true);
-pros::adi::Pneumatics feeder('G', true);
+pros::adi::Pneumatics wing('E', false);
+pros::adi::Pneumatics feeder('G', false);
 pros::adi::Pneumatics toggler('F', false); // default to top
 pros::adi::Pneumatics stopper('H', true);
 
@@ -244,12 +244,13 @@ void autonomous() {
     autoIntakeEnabled = false;
     
     // Get the three balls
-    chassis.setPose(0, 2, 0);
-    chassis.moveToPose(side*12.2, 10.1, side*45, 1000);
+    chassis.setPose(0, 0, 0);
+    chassis.moveToPose(side*2.5, 17, side*45, 1000, {.minSpeed = 127});
     chassis.waitUntilDone();
     autoIntakeEnabled = true;
     feeder.extend();
-    chassis.moveToPoint(side*21.7, 18.1, side*45, 1000, {.maxSpeed = 100});
+    chassis.moveToPose(side*9.6, 24, side*45, 1000, {.maxSpeed = 100});
+    chassis.waitUntilDone();
 
     // Score the bottom tube of the middle goal
     // chassis.turnToPoint(side*6, 48.5, 1000)
@@ -313,8 +314,8 @@ void autonomous() {
 // -------------------- Driver Control --------------------
 
 bool manual = true;
-bool feederExtended = true;
-bool wingExtended = true;
+bool feederExtended = false;
+bool wingExtended = false;
 bool stopperExtended = true;
 bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
