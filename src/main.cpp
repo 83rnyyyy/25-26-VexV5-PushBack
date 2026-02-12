@@ -26,7 +26,7 @@ pros::Imu imu(10);
 pros::adi::Pneumatics wing('E', false);
 pros::adi::Pneumatics feeder('G', false);
 pros::adi::Pneumatics toggler('F', false); // default to top
-pros::adi::Pneumatics stopper('H', true);
+pros::adi::Pneumatics stopper('H', false);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 8);
@@ -42,9 +42,9 @@ lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(4, // proportional gain (kP)
+lemlib::ControllerSettings angularController(3, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              21, // derivative gain (kD)
+                                              10, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -255,13 +255,27 @@ void autonomous() {
     // *** END NOT WORKING ***
 
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(0, 6.674, 500); // 6.674
+
+    feeder.extend();
+
+    // chassis.turnToHeading(180, 1000);
+    chassis.moveToPoint(0, 33, 2500);
     chassis.waitUntilDone();
-    chassis.turnToHeading(side*45, 500); // 90
+    chassis.turnToHeading(92, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.horizontalDrift = 8, .lead = 0});
+    chassis.moveToPoint(15, 33, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    autoIntakeEnabled = true;
+    pros::delay(2000);
+    chassis.moveToPoint(-24, 33, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    // chassis.moveToPoint(0, 6.674, 500); // 6.674
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(side*45, 500); // 90
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.horizontalDrift = 8, .lead = 0});
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
     // chassis.turnToHeading(side*135, 800);
     // chassis.waitUntilDone();
 
