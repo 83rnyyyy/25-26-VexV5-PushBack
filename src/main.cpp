@@ -29,7 +29,7 @@ pros::adi::Pneumatics toggler('F', false); // default to top
 pros::adi::Pneumatics stopper('H', false);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 8);
+lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 
 // controllers
 lemlib::ControllerSettings linearController(11, // proportional gain (kP)
