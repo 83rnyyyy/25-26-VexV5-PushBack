@@ -32,9 +32,9 @@ pros::adi::Pneumatics stopper('H', true);
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 8);
 
 // controllers
-lemlib::ControllerSettings linearController(11, // proportional gain (kP)
+lemlib::ControllerSettings linearController(10, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              25, // derivative gain (kD)
+                                              3, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -42,9 +42,9 @@ lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(4, // proportional gain (kP)
+lemlib::ControllerSettings angularController(3, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              21, // derivative gain (kD)
+                                              7, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -250,47 +250,52 @@ void autonomous() {
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // feeder.extend();
-    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.horizontalDrift = 8, .maxSpeed = 100});
-    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.horizontalDrift = 8,
+    // .maxSpeed = 100}); chassis.waitUntilDone();
     // *** END NOT WORKING ***
+    
+    int longGoalY = 28.4;
 
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(0, 28.4, 1000);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(90, 1000);
+    // chassis.moveToPoint(0, 24, 9999)
+    // chassis.turnToHeading(180, 1000);
+    // // chassis.moveToPoint(1, 24, 9999);
+    chassis.moveToPoint(0, longGoalY, 3000);
     autoIntakeEnabled = true;
     feeder.extend();
     chassis.waitUntilDone();
-    chassis.moveToPoint(12, 28.4, 1000, {.minSpeed = 127});
+    chassis.turnToHeading(90, 1000, {.minSpeed = 127});
     chassis.waitUntilDone();
-    pros::delay(2000);
+    // chassis.moveToPoint(12, longGoalY, 1000, {.minSpeed = 127});
+    // chassis.waitUntilDone();
+    // pros::delay(2000);
 
-    chassis.moveToPoint(20, 28.4, 1000, {.forwards = false, .minSpeed = 127});
-    feeder.retract();
-    chassis.waitUntilDone();
-    autoIntakeEnabled = false;
-    topOuttake();
-    pros::delay(2000);
-    stopAllCollectors();
+    // chassis.moveToPoint(20, longGoalY, 1000, {.forwards = false, .minSpeed = 127});
+    // feeder.retract();
+    // chassis.waitUntilDone();
+    // autoIntakeEnabled = false;
+    // topOuttake();
+    // pros::delay(2000);
+    // stopAllCollectors();
 
-    chassis.moveToPoint(2.3, 28.4, 1000);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(-135, 1000);
-    chassis.waitUntilDone();
-    chassis.moveToPoint(17.8, 43.9, 1000);
-    chassis.waitUntilDone();
-    autoIntakeEnabled = true;
-    chassis.moveToPoint(35.6, 61.7, 1000, {.maxSpeed = 100});
-    chassis.waitUntilDone()
-    autoIntakeEnabled = false;
-    midOuttake();
-    pros::delay(2000);
+    // chassis.moveToPoint(2.3, longGoalY, 1000);
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(-135, 1000);
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(17.8, 43.9, 1000);
+    // chassis.waitUntilDone();
+    // autoIntakeEnabled = true;
+    // chassis.moveToPoint(35.6, 61.7, 1000, {.maxSpeed = 100});
+    // chassis.waitUntilDone()
+    // autoIntakeEnabled = false;
+    // midOuttake();
+    // pros::delay(2000);
 
-    chassis.moveToPoint(11, 39.4, 1000);
-    chassis.waitUntilDone();
-    chassis.moveToPoint(60, 39.4, 1000, {.minSpeed = 127});
-    wing.retract();
-    chassis.waitUntilDone();
+    // chassis.moveToPoint(11, 39.4, 1000);
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(60, 39.4, 1000, {.minSpeed = 127});
+    // wing.retract();
+    // chassis.waitUntilDone();
     
 
 
