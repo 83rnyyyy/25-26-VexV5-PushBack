@@ -272,7 +272,7 @@ void autonomous() {
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
     // ****
-    chassis.moveToPoint(-26, tubeY+2, 1000, {.forwards = false}); // slight far: x=-24
+    chassis.moveToPoint(-26, tubeY+1.5, 1000, {.forwards = false}); // slight far: x=-24
     feeder.retract();
     chassis.waitUntilDone();
     autoIntakeEnabled = false;
