@@ -254,7 +254,7 @@ void autonomous() {
     // chassis.waitUntilDone();
     // *** END NOT WORKING ***
 
-    int tubeY = 30.5;
+    int tubeY = 32; // 31.5
 
     chassis.setPose(0, 0, 0);
 
@@ -265,19 +265,20 @@ void autonomous() {
     chassis.waitUntilDone();
     chassis.turnToHeading(92, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPoint(15, tubeY, 2500); // t1000 -> t2500
+    chassis.moveToPoint(15, tubeY, 2500, {.maxSpeed = 80}); // t1000 -> t2500
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // pros::delay(1500);
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
     // ****
-    chassis.moveToPoint(-28, tubeY+2, 1000, {.forwards = false}); // slight far: x=-24
+    chassis.moveToPoint(-26, tubeY+2, 1000, {.forwards = false}); // slight far: x=-24
     feeder.retract();
     chassis.waitUntilDone();
     autoIntakeEnabled = false;
     topOuttake();
     pros::delay(3000);
+
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
     // chassis.waitUntilDone();
     // chassis.turnToHeading(side*45, 500); // 90
