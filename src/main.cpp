@@ -275,14 +275,12 @@ void autonomous() {
     topOuttake();
     pros::delay(3500);
 
+    stopAllCollectors();
     chassis.moveToPoint(side*-13, tubeY, 1000);
     chassis.waitUntilDone();
     chassis.turnToPoint(side*-26, 14, 1000);
     chassis.waitUntilDone();
-    // chassis.moveToPoint(-26, 14, 2000);
-    // chassis.waitUntil(10);
-    // autoIntakeEnabled = true;
-    // chassis.waitUntilDone();
+
     chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 80}); // -37 -> -36, 7 -> 6
     chassis.waitUntil(10);
     autoIntakeEnabled = true;
