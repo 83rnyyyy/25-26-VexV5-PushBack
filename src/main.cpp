@@ -261,11 +261,11 @@ void autonomous() {
     feeder.extend();
 
     // chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(0, tubeY, 2500);
+    chassis.moveToPoint(0, tubeY, 2000);
     chassis.waitUntilDone();
     chassis.turnToHeading(92, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPoint(15, tubeY, 2500, {.maxSpeed = 80}); // t1000 -> t2500
+    chassis.moveToPoint(15, tubeY+2, 2500, {.maxSpeed = 80}); // t1000 -> t2500
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // pros::delay(1500);
@@ -273,11 +273,30 @@ void autonomous() {
     chassis.waitUntilDone();
     // ****
     chassis.moveToPoint(-26, tubeY+1.5, 1000, {.forwards = false}); // slight far: x=-24
+    chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
     feeder.retract();
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    topOuttake();
+    pros::delay(3500);
+
+    chassis.moveToPoint(-13, tubeY, 1000);
+    chassis.waitUntilDone();
+    chassis.turnToPoint(-26, 14, 1000);
+    chassis.waitUntilDone();
+    // chassis.moveToPoint(-26, 14, 2000);
+    // chassis.waitUntil(10);
+    // autoIntakeEnabled = true;
+    // chassis.waitUntilDone();
+    chassis.moveToPoint(-31, 9, 3000, {.maxSpeed = 100});
+    chassis.waitUntil(10);
+    autoIntakeEnabled = true;
     chassis.waitUntilDone();
     autoIntakeEnabled = false;
-    topOuttake();
-    pros::delay(3000);
+    pros::delay(500);
+    bottomOuttake();
+
+
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
     // chassis.waitUntilDone();
