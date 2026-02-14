@@ -288,7 +288,7 @@ void autonomous() {
     // chassis.waitUntil(10);
     // autoIntakeEnabled = true;
     // chassis.waitUntilDone();
-    chassis.moveToPoint(-31, 9, 3000, {.maxSpeed = 100});
+    chassis.moveToPoint(-37, 6, 3000, {.maxSpeed = 90});
     chassis.waitUntil(10);
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
