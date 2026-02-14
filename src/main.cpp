@@ -30,7 +30,6 @@ pros::adi::Pneumatics stopper('H', false);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
-
 // controllers
 lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // integral gain (kI)
@@ -265,7 +264,7 @@ void autonomous() {
     chassis.waitUntilDone();
     chassis.turnToHeading(92, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPoint(15, tubeY+2, 2500, {.maxSpeed = 80}); // t1000 -> t2500
+    chassis.moveToPoint(15, tubeY+1.5, 2500, {.maxSpeed = 70}); // t1000 -> t2500 y+2, -> y+1.5
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // pros::delay(1500);
@@ -288,7 +287,7 @@ void autonomous() {
     // chassis.waitUntil(10);
     // autoIntakeEnabled = true;
     // chassis.waitUntilDone();
-    chassis.moveToPoint(-37, 6, 3000, {.maxSpeed = 90});
+    chassis.moveToPoint(-36.5, 6.5, 3000, {.maxSpeed = 90}); // -37 -> -36, 7 -> 6
     chassis.waitUntil(10);
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
