@@ -242,16 +242,12 @@ ASSET(example_txt);
 void autonomous() {
     autoIntakeEnabled = false;
 
-    // *** NOT WORKING ***
-    // Get the three balls
-    // chassis.setPose(0, 0, 0);
-    // chassis.moveToPose(10, 25, 25, 1000, {.horizontalDrift = 8});
-    // chassis.waitUntilDone();
+    // *****
+
     // autoIntakeEnabled = true;
-    // feeder.extend();
-    // chassis.moveToPose(side*9.6, 24, side*45, 1000, {.horizontalDrift = 8, .maxSpeed = 100});
-    // chassis.waitUntilDone();
-    // *** END NOT WORKING ***
+    // chassis.moveToPoint(0, 24, int timeout)
+
+    // *****
 
     int tubeY = 32; // 31.5
 
@@ -262,16 +258,16 @@ void autonomous() {
     // chassis.turnToHeading(180, 1000);
     chassis.moveToPoint(0, tubeY, 2000);
     chassis.waitUntilDone();
-    chassis.turnToHeading(92, 1000);
+    chassis.turnToHeading(side*92, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPoint(15, tubeY+1.5, 2500, {.maxSpeed = 70}); // t1000 -> t2500 y+2, -> y+1.5
+    chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 40}); // t1000 -> t2500 y+2, -> y+1.5
     // chassis.waitUntilDone();
     // autoIntakeEnabled = true;
     // pros::delay(1500);
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
     // ****
-    chassis.moveToPoint(-26, tubeY+1.5, 1000, {.forwards = false}); // slight far: x=-24
+    chassis.moveToPoint(side*-26, tubeY+1.5, 850, {.forwards = false}); // slight far: x=-24
     chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
     feeder.retract();
     autoIntakeEnabled = false;
@@ -279,23 +275,23 @@ void autonomous() {
     topOuttake();
     pros::delay(3500);
 
-    chassis.moveToPoint(-13, tubeY, 1000);
+    chassis.moveToPoint(side*-13, tubeY, 1000);
     chassis.waitUntilDone();
-    chassis.turnToPoint(-26, 14, 1000);
+    chassis.turnToPoint(side*-26, 14, 1000);
     chassis.waitUntilDone();
     // chassis.moveToPoint(-26, 14, 2000);
     // chassis.waitUntil(10);
     // autoIntakeEnabled = true;
     // chassis.waitUntilDone();
-    chassis.moveToPoint(-36.5, 6.5, 3000, {.maxSpeed = 90}); // -37 -> -36, 7 -> 6
+    chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 80}); // -37 -> -36, 7 -> 6
     chassis.waitUntil(10);
     autoIntakeEnabled = true;
     chassis.waitUntilDone();
     autoIntakeEnabled = false;
     pros::delay(500);
-    bottomOuttake();
+    midOuttake();
 
-
+    // *******************
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
     // chassis.waitUntilDone();
