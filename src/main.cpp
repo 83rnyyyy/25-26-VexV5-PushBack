@@ -213,14 +213,21 @@ void initialize() {
     static pros::Task screenTask([] {
         while (true) {
             lemlib::Pose chass = chassis.getPose();
-            pros::lcd::print(0, "X: %f", chass.x); std::printf("X: %f", chass.x);
-            pros::lcd::print(1, "Y: %f", chass.y); std::printf("Y: %f", chass.y);
-            pros::lcd::print(2, "Theta: %f", chass.theta); std::printf("Theta: %f", chass.theta);
-
-            pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+            // Print to Brain Screen
+            pros::lcd::print(0, "X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta);
+            pros::lcd::print(3, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+            
+            // Print to PROS Terminal
+            std::printf("X: %f", chass.x);
+            std::printf("Y: %f", chass.y);
+            std::printf("Theta: %f", chass.theta);
             std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
+            // Log chassis position
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
+
             pros::delay(50);
         }
     });
