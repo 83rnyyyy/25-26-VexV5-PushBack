@@ -20,7 +20,6 @@ pros::Motor SecondCollector(12);  // back collector
 pros::Motor ThirdCollector(-11);   // front top collector
 
 // sensors
-// pros::Optical optical(19);
 pros::Imu imu(10);
 
 // pneumatics
@@ -72,27 +71,12 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 
 
 // -------------------- QUICK CONFIGURATION -------------------- //
-// constexpr bool allianceIsBlue = false; // true = keep BLUE, false = keep RED
 constexpr int side = 1; // 1 = right, -1 = left
 
 
-// -------------------- Intake / Color Sort -------------------- //
-// constexpr int PROX_THRESH = 120;       // tune this
-volatile bool autoIntakeEnabled = false;
-volatile bool rejectMid = true;
-
-// int colourDet() {
-//     return allianceIsBlue ? 2 : 1;
-//     int prox = optical.get_proximity();
-//     if (prox < PROX_THRESH) return 0;
-
-//     double hue = optical.get_hue();
-//     if (hue > 340 || hue < 25) return 1;        // red
-//     if (hue > 90 && hue < 260) return 2;        // blue
-//     return 0;
-// }
-
 // -------------------- Intake & Outake functions -------------------- //
+volatile bool autoIntakeEnabled = false;
+
 void defaultCollector() {
     FirstCollector.move(-127);
     SecondCollector.move(-127);
@@ -132,33 +116,8 @@ void stopAllCollectors() {
     // }
 }
 
-// void intakeWithDet() {
-//     const int keep = allianceIsBlue ? 2 : 1;
-//     const int reject = allianceIsBlue ? 1 : 2;
-
-//     // do nothing unless enabled
-//     while (!autoIntakeEnabled) {
-//         stopAllCollectors();
-//         pros::delay(20);
-//     }
-
-//     FirstCollector.move(127);
-
-//     // wait until we actually see something (but allow disable to break out)
-//     while (autoIntakeEnabled && colourDet() == 0) pros::delay(20);
-//     if (!autoIntakeEnabled) { stopAllCollectors(); return; }
-
-//     int c = colourDet();
-//     if (c == reject) {
-//         // if (rejectMid) midOuttake();
-//         // else bottomOuttake();
-//         bottomOuttake();
-//     } else if (c == keep) intake();
-// }
-
-void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
-    // const int keep = allianceIsBlue ? 2 : 1;
-    // const int reject = allianceIsBlue ? 1 : 2;
+/* blocks=0 --> infinite */
+void intakeMultiple(int blocks) {
 
     int accepted = 0;
 
@@ -178,42 +137,21 @@ void intakeWithDetMultiple(int blocks) { // blocks=0 => infinite
         while (autoIntakeEnabled /*&& colourDet() == 0*/) pros::delay(20);
         if (!autoIntakeEnabled) continue;
 
-        // since color detection removed, assume all balls are accepted
-        while (autoIntakeEnabled) pros::delay(20); // count once per block: wait until it leaves the sensor
+        // count each block intaked
+        while (autoIntakeEnabled) pros::delay(20);
         accepted++;
-
-
-        // old code with color detector //
-        // int c = colourDet();
-
-        // if (c == reject) {
-        //     // eject until the rejected color is gone (or auto disabled)
-        //     // if (rejectMid) midOuttake();
-        //     // else bottomOuttake();
-        //     bottomOuttake();
-        //     while (autoIntakeEnabled && colourDet() == reject) pros::delay(20);
-        //     pros::delay(50);
-        //     if (rejectMid) pros::delay(500);
-        // } else if (c == keep) {
-        //     // count once per block: wait until it leaves the sensor
-        //     while (autoIntakeEnabled && colourDet() == keep) pros::delay(20);
-        //     accepted++;
-        // } else {
-        //     // unknown hue while prox high; just let it move through a bit
-        //     pros::delay(30);
-        // }
     }
 
     stopAllCollectors();
 }
 
 void intakeTask(void*) {
-    intakeWithDetMultiple(0);
+    intakeMultiple(0);
 }
 
 
 // -------------------- PROS Callbacks -------------------- //
-
+/* Init code upon program being run */
 void initialize() {
     pros::lcd::initialize();
     chassis.calibrate();
@@ -246,22 +184,21 @@ void initialize() {
     static pros::Task autoIntakeTask(intakeTask);
 }
 
-// Match end robot state
+/* Match end robot state */
 void disabled() {
     feeder.retract();
     wing.retract();
     wing.set_value(false);
 }
 
+/* Init code that only runs in competition mode */
 void competition_initialize() {}
 
 ASSET(example_txt);
 
-// Code that runs during autonomous
+/* Code that runs during autonomous period */
 void autonomous() {
     // autoIntakeEnabled = false;
-    // rejectMid = true;
-
 
     // chassis.setPose(0, 0, 0);
     // chassis.moveToPose(side*9.69, 15, side*45, 1000);
@@ -308,7 +245,6 @@ void autonomous() {
     // chassis.waitUntilDone();
     // chassis.moveToPose(side*46.22, -10, side*180, 3000, {.minSpeed = 127}); // 45.72 -> 46.22
     
-    // rejectMid = false;
     // feeder.extend();
     // chassis.waitUntilDone();
     // chassis.moveToPose(side*46.77, -16.5, side*180, 800, {.lead = 0, .minSpeed = 127}); // 45.72 -> 45.22 -> 46.22 -> 46.72
@@ -332,9 +268,10 @@ bool stopperExtended = true;
 bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
 int modifier = driveDirection ? 1 : -1;
+
+/* Code that runs during driver control; The manual controls for the robot */
 void opcontrol() {
     autoIntakeEnabled = false;
-    // rejectMid = true;
 
     while (true) {
         int leftY = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
