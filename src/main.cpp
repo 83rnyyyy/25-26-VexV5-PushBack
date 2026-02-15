@@ -194,14 +194,12 @@ void initialize() {
     static pros::Task screenTask([] {
         while (true) {
             lemlib::Pose chass = chassis.getPose();
-            pros::lcd::print(0, "X: %f", chass.x);
-            pros::lcd::print(1, "Y: %f", chass.y);
-            pros::lcd::print(2, "Theta: %f", chass.theta);
+            pros::lcd::print(0, "X: %f", chass.x); std::printf("X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y); std::printf("Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta); std::printf("Theta: %f", chass.theta);
 
-            pros::lcd::print(3, "Hue:  %f", optical.get_hue());
-            int color = colourDet();
-            pros::lcd::print(4, "Color detected: %s", (color == 0 ? "none" : (color == 1 ? "red" : "blue")));
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+            std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
             pros::delay(50);
