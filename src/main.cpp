@@ -23,14 +23,13 @@ pros::Motor ThirdCollector(-11);   // front top collector
 pros::Imu imu(10);
 
 // pneumatics
-pros::adi::Pneumatics wing('E', true);
-pros::adi::Pneumatics feeder('G', true);
+pros::adi::Pneumatics wing('E', false);
+pros::adi::Pneumatics feeder('G', false);
 pros::adi::Pneumatics toggler('F', false); // default to top
-pros::adi::Pneumatics stopper('H', true);
+pros::adi::Pneumatics stopper('H', false);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 8);
-
+lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel::NEW_275, 450, 2);
 // controllers
 lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // integral gain (kI)
@@ -42,9 +41,9 @@ lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(4, // proportional gain (kP)
+lemlib::ControllerSettings angularController(3, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              21, // derivative gain (kD)
+                                              10, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -89,15 +88,16 @@ void intake() {
 }
 
 void topOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (!toggler.is_extended()) toggler.extend();
+    defaultCollector();
+    
 }
 
 void midOuttake() {
-    defaultCollector();
     if (stopper.is_extended()) stopper.retract();
     if (toggler.is_extended()) toggler.retract();
+    defaultCollector();
 }
 
 void bottomOuttake() {
@@ -161,19 +161,13 @@ void initialize() {
     static pros::Task screenTask([] {
         while (true) {
             lemlib::Pose chass = chassis.getPose();
-            // Print to Brain Screen
-            pros::lcd::print(0, "X: %f", chass.x);
-            pros::lcd::print(1, "Y: %f", chass.y);
-            pros::lcd::print(2, "Theta: %f", chass.theta);
-            pros::lcd::print(3, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
-            
-            // Print to PROS Terminal
-            std::printf("X: %f", chass.x);
-            std::printf("Y: %f", chass.y);
-            std::printf("Theta: %f", chass.theta);
+            pros::lcd::print(0, "X: %f", chass.x); std::printf("X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y); std::printf("Y: %f", chass.y);
+            pros::lcd::print(2, "Theta: %f", chass.theta); std::printf("Theta: %f", chass.theta);
+
+            pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
             std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-            // Log chassis position
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
             pros::delay(50);
@@ -200,39 +194,97 @@ ASSET(example_txt);
 void autonomous() {
     // autoIntakeEnabled = false;
 
-    // chassis.setPose(0, 0, 0);
-    // chassis.moveToPose(side*9.69, 15, side*45, 1000);
-    // chassis.waitUntil(12);
+    // autoIntakeEnabled = true;
+    // chassis.moveToPoint(0, 24, int timeout)
+
+    // *****
+
+    int tubeY = 32; // 31.5
+
+    chassis.setPose(0, 0, 0);
+
+    feeder.extend();
+
+    // chassis.turnToHeading(180, 1000);
+    chassis.moveToPoint(0, tubeY, 2000);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(side*92, 1000);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 40}); // t1000 -> t2500 y+2, -> y+1.5
+    // chassis.waitUntilDone();
+    // autoIntakeEnabled = true;
+    // pros::delay(1500);
+    autoIntakeEnabled = true;
+    chassis.waitUntilDone();
+    // ****
+    chassis.moveToPoint(side*-26, tubeY+1.5, 850, {.forwards = false}); // slight far: x=-24
+    chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
+    feeder.retract();
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    topOuttake();
+    pros::delay(3500);
+
+    chassis.moveToPoint(side*-13, tubeY, 1000);
+    chassis.waitUntilDone();
+    chassis.turnToPoint(side*-26, 14, 1000);
+    chassis.waitUntilDone();
+    // chassis.moveToPoint(-26, 14, 2000);
+    // chassis.waitUntil(10);
     // autoIntakeEnabled = true;
     // chassis.waitUntilDone();
+    chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 80}); // -37 -> -36, 7 -> 6
+    chassis.waitUntil(10);
+    autoIntakeEnabled = true;
+    chassis.waitUntilDone();
+    autoIntakeEnabled = false;
+    pros::delay(500);
+    midOuttake();
 
-    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.forwards = true});
+    // *******************
+
+    // chassis.moveToPoint(0, 6.674, 500); // 6.674
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(side*45, 500); // 90
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*8.933, 15.607, side*45, 1000, {.horizontalDrift = 8, .lead = 0});
+    // chassis.waitUntilDone();
+    // chassis.moveToPose(side*17.73, 27.53, side*45, 1000, {.horizontalDrift = 8, .lead = 0, .maxSpeed = 48}); // 29.25, 29.25
+    // chassis.turnToHeading(side*135, 800);
+    // chassis.waitUntilDone();
+
+    // Score the bottom tube of the middle goal
+    // chassis.turnToPoint(side*6, 48.5, 1000)
+    // chassis.moveToPose(side*6, 48.5, side*-45, 1000, {.horizontalDrift = 8, .minSpeed = 127});
     // pros::delay(500);
     // autoIntakeEnabled = false;
     // chassis.waitUntilDone();
-
-    // if (side == -1) bottomOuttake();
+    // if (side) bottomOuttake();
     // else midOuttake();
     // pros::delay(1000);
 
-    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
+    // // Move to between long goal and dispenser
+    // chassis.moveToPose(side*46.77, -16.5, 180, 800, {.horizontalDrift = 8, .minSpeed = 127}); // REMINDER: if this doesnt work, increase timeout
     // pros::delay(1000);
 
+    // // Collect balls from dispenser
     // autoIntakeEnabled = true;
     // feeder.extend();
     // chassis.waitUntilDone();
     // pros::delay(1000);
-    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .lead = 0});
+    // chassis.moveToPose(side*46.77, 18.73, 180, 1000, {.forwards = false, .horizontalDrift = 8, .lead = 0});
     // autoIntakeEnabled = false;
     // chassis.waitUntilDone();
-    // topOuttake();
+    // intake();
     // pros::delay(1000);
 
-    // chassis.moveToPose(side*55, 10, 180, 1000);
+    // // 🧐
+    // chassis.moveToPose(side*37, 10, 180, 1000);
     // wing.extend();
     // chassis.waitUntilDone();
-    // chassis.moveToPose(side*55, 48.5, 180, 1000, {.forwards = false, .lead = 0, .minSpeed = 127});
-    
+    // chassis.moveToPose(side*37, 48.5, 180, 1000, {.forwards = false, .horizontalDrift = 8, .lead = 0, .minSpeed = 127});
+
+    // *** OLD CODE ****************
 
     // chassis.moveToPoint(0, 6.674, 500); // 6.674
     // chassis.waitUntilDone();
@@ -262,8 +314,8 @@ void autonomous() {
 
 // -------------------- Driver Control -------------------- //
 bool manual = true;
-bool feederExtended = true;
-bool wingExtended = true;
+bool feederExtended = false;
+bool wingExtended = false;
 bool stopperExtended = true;
 bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
@@ -275,7 +327,7 @@ void opcontrol() {
 
     while (true) {
         int leftY = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = modifier*controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         chassis.arcade(leftY, rightX);
 
         // toggle manual/auto (debounced)
