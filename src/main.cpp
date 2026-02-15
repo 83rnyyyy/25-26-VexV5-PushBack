@@ -192,7 +192,7 @@ ASSET(example_txt);
 
 /* Code that runs during autonomous period */
 void autonomous() {
-    // autoIntakeEnabled = false;
+    autoIntakeEnabled = false;
 
     // autoIntakeEnabled = true;
     // chassis.moveToPoint(0, 24, int timeout)
