@@ -1,3 +1,4 @@
 ﻿# 25-26-VexV5-PushBack
 
-dont worry about it gambler
+Don't worry about this, Gambler...
+
