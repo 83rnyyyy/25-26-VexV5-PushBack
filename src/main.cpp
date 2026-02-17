@@ -1,4 +1,5 @@
 #include "main.h"
+#include "lemlib/chassis/chassis.hpp"
 #include "pros/adi.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/misc.h"
@@ -152,6 +153,7 @@ void intakeTask(void*) {
 
 // -------------------- PROS Callbacks -------------------- //
 /* Init code upon program being run */
+bool logDebug = true;
 void initialize() {
     pros::lcd::initialize();
     chassis.calibrate();
@@ -161,16 +163,23 @@ void initialize() {
     static pros::Task screenTask([] {
         while (true) {
             lemlib::Pose chass = chassis.getPose();
-            pros::lcd::print(0, "X: %f", chass.x); std::printf("X: %f", chass.x);
-            pros::lcd::print(1, "Y: %f", chass.y); std::printf("Y: %f", chass.y);
-            pros::lcd::print(2, "Theta: %f", chass.theta); std::printf("Theta: %f", chass.theta);
+            pros::lcd::print(0, "X: %f", chass.x);
+            pros::lcd::print(1, "Y: %f", chass.y); 
+            pros::lcd::print(2, "Theta: %f", chass.theta); 
 
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
-            std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
-            
-            std::printf("FirstCollector: %f", FirstCollector.get_actual_velocity());
-            std::printf("SecondCollector: %f", SecondCollector.get_actual_velocity());
-            std::printf("ThirdCollector: %f", ThirdCollector.get_actual_velocity());
+
+            if (logDebug) {
+                std::printf("X: %f", chass.x);
+                std::printf("Y: %f", chass.y);
+                std::printf("Theta: %f", chass.theta);
+
+                std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+
+                std::printf("FirstCollector: %f", FirstCollector.get_actual_velocity());
+                std::printf("SecondCollector: %f", SecondCollector.get_actual_velocity());
+                std::printf("ThirdCollector: %f", ThirdCollector.get_actual_velocity());
+            }
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
