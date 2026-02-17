@@ -203,6 +203,44 @@ void competition_initialize() {}
 
 ASSET(example_txt);
 
+void auto_tune_pid(lemlib::ControllerSettings controller, bool linear, int margin, int OSCMargin) {
+    logDebug = false;
+    while (true) {
+        printf("Testing (%f, %f)", controller.kP, controller.kD);
+        bool osc = false;
+        if (linear) {
+            chassis.moveToPoint(0, 24, 4999);
+            while (std::abs(chassis.getPose().y-24) > OSCMargin) {
+                pros::delay(20);
+            }
+            while (chassis.isInMotion()) {
+                if (std::abs(chassis.getPose().y - 24) > OSCMargin) {
+                    osc = true;
+                }
+                pros::delay(20);
+            }
+        } else {
+            chassis.turnToHeading(180, 4999);
+            while (std::abs(chassis.getPose().theta-180) > OSCMargin) {
+                pros::delay(20);
+            }
+            while (chassis.isInMotion()) {
+                if (std::abs(chassis.getPose().theta - 180) > OSCMargin) {
+                    osc = true;
+                }
+                pros::delay(20);
+            }
+        }
+        if (osc) {
+            printf("Oscillation on values (%f, %f)", controller.kP, controller.kD);
+            controller.kD += 3;
+        } else {
+            printf("No oscilation on values (%f, %f)", controller.kP, controller.kD);
+            controller.kP += 1;
+        }
+    }
+}
+
 /* Code that runs during autonomous period */
 void autonomous() {
     autoIntakeEnabled = false;
