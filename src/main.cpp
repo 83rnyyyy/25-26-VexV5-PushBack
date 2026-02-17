@@ -203,10 +203,11 @@ void competition_initialize() {}
 
 ASSET(example_txt);
 
-void auto_tune_pid(lemlib::ControllerSettings controller, bool linear, int margin, int OSCMargin) {
+void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, int margin, int OSCMargin) {
     logDebug = false;
     while (true) {
-        printf("Testing (%f, %f)", controller.kP, controller.kD);
+        printf("Testing (%f, %f)", movementController.kP, movementController.kD);
+        chassis.setPose(0, 0, 0)
         bool osc = false;
         if (linear) {
             chassis.moveToPoint(0, 24, 4999);
@@ -232,11 +233,16 @@ void auto_tune_pid(lemlib::ControllerSettings controller, bool linear, int margi
             }
         }
         if (osc) {
-            printf("Oscillation on values (%f, %f)", controller.kP, controller.kD);
-            controller.kD += 3;
+            printf("Oscillation on values (%f, %f)", movementController.kP, movementController.kD);
+            movementController.kD += 3;
         } else {
-            printf("No oscilation on values (%f, %f)", controller.kP, controller.kD);
-            controller.kP += 1;
+            printf("No oscilation on values (%f, %f)", movementController.kP, movementController.kD);
+            movementController.kP += 1;
+        }
+        
+        printf("Press A on the controller to continue...");
+        while (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+            pros::delay(20);
         }
     }
 }
