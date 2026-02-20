@@ -1,5 +1,6 @@
 #include "main.h"
 #include "lemlib/chassis/chassis.hpp"
+#include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/misc.h"
@@ -16,9 +17,9 @@ pros::MotorGroup leftMotors({-2, 4, -6}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 5, -7}, pros::MotorGearset::blue);
 
 // collectors
-pros::Motor FirstCollector(16);   // front bottom collector
-pros::Motor SecondCollector(12);  // back collector
-pros::Motor ThirdCollector(-11);   // front top collector
+pros::Motor FirstCollector(16, pros::MotorGearset::blue);   // front bottom collector
+pros::Motor SecondCollector(12, pros::MotorGearset::blue);  // back collector
+pros::Motor ThirdCollector(-11, pros::MotorGearset::blue);   // front top collector
 
 // sensors
 pros::Imu imu(10);
