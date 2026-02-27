@@ -43,9 +43,9 @@ lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(3, // proportional gain (kP)
+lemlib::ControllerSettings angularController(0, // proportional gain (kP) 3
                                               0, // integral gain (kI)
-                                              10, // derivative gain (kD)
+                                              0, // derivative gain (kD) 10
                                               0, // anti windup
                                               0, // small error range, in inches
                                               0, // small error range timeout, in milliseconds
@@ -162,6 +162,7 @@ void initialize() {
 
     // IMPORTANT: make tasks static so they don't get destroyed when initialize() returns
     static pros::Task screenTask([] {
+        int c = 1;
         while (true) {
             lemlib::Pose chass = chassis.getPose();
             pros::lcd::print(0, "X: %f", chass.x);
@@ -170,17 +171,22 @@ void initialize() {
 
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-            if (logDebug) {
-                std::printf("X: %f", chass.x);
-                std::printf("Y: %f", chass.y);
-                std::printf("Theta: %f", chass.theta);
+            if (logDebug && c == 10) {
+                std::printf("X: %f\n", chass.x);
+                std::printf("Y: %f\n", chass.y);
+                std::printf("Theta: %f\n", chass.theta);
 
-                std::printf("Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
+                std::printf("Auto intake %s\n", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-                std::printf("FirstCollector: %f", FirstCollector.get_actual_velocity());
-                std::printf("SecondCollector: %f", SecondCollector.get_actual_velocity());
-                std::printf("ThirdCollector: %f", ThirdCollector.get_actual_velocity());
+                std::printf("FirstCollector: %f\n", FirstCollector.get_actual_velocity());
+                std::printf("SecondCollector: %f\n", SecondCollector.get_actual_velocity());
+                std::printf("ThirdCollector: %f\n", ThirdCollector.get_actual_velocity());
+                std::printf("----------------------------------\n");
+
+                c = 1;
             }
+
+            c += 1;
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
@@ -204,47 +210,71 @@ void competition_initialize() {}
 
 ASSET(example_txt);
 
-void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, int margin, int OSCMargin) {
+void auto_tune_pid(lemlib::ControllerSettings movementController, lemlib::Chassis chassis, bool linear, int margin, int OSCMargin) {
     logDebug = false;
+    // bool osc = false;
     while (true) {
-        printf("Testing (%f, %f)", movementController.kP, movementController.kD);
-        chassis.setPose(0, 0, 0)
-        bool osc = false;
+        std::printf("Testing (%f, %f)\n", movementController.kP, movementController.kD);
+        chassis.setPose(0, 0, 0);
+        // osc = false;
         if (linear) {
             chassis.moveToPoint(0, 24, 4999);
-            while (std::abs(chassis.getPose().y-24) > OSCMargin) {
-                pros::delay(20);
-            }
-            while (chassis.isInMotion()) {
-                if (std::abs(chassis.getPose().y - 24) > OSCMargin) {
-                    osc = true;
-                }
-                pros::delay(20);
-            }
+            // while (std::abs(chassis.getPose().y-24) > OSCMargin) {
+            //     pros::delay(20);
+            // }
+            // pros::delay(100);
+            // while (chassis.isInMotion()) {
+            //     if (std::abs(chassis.getPose().y - 24) > OSCMargin) {
+            //         osc = true;
+            //     }
+            //     pros::delay(20);
+            // }
         } else {
             chassis.turnToHeading(180, 4999);
-            while (std::abs(chassis.getPose().theta-180) > OSCMargin) {
-                pros::delay(20);
-            }
-            while (chassis.isInMotion()) {
-                if (std::abs(chassis.getPose().theta - 180) > OSCMargin) {
-                    osc = true;
-                }
-                pros::delay(20);
-            }
+            // while (std::abs(chassis.getPose().theta-180) > OSCMargin) {
+            //     pros::delay(20);
+            // }
+            // pros::delay(100);
+            // while (chassis.isInMotion()) {
+            //     if (std::abs(chassis.getPose().theta - 180) > OSCMargin) {
+            //         osc = true;
+            //     }
+            //     pros::delay(20);
+            // }
         }
-        if (osc) {
-            printf("Oscillation on values (%f, %f)", movementController.kP, movementController.kD);
-            movementController.kD += 3;
-        } else {
-            printf("No oscilation on values (%f, %f)", movementController.kP, movementController.kD);
-            movementController.kP += 1;
-        }
-        
-        printf("Press A on the controller to continue...");
-        while (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+        // if (osc) {
+        //     std::printf("Oscillation on values (%f, %f)\n", movementController.kP, movementController.kD);
+        //     movementController.kD += 3;
+        // } else {
+        //     std::printf("No oscilation on values (%f, %f)\n", movementController.kP, movementController.kD);
+        //     movementController.kP += 1;
+        // }
+        chassis.waitUntilDone();
+        std::printf("Change kP and kD accordingly. Left up and down for kP, X and B for kD, and A to finish.\n");
+        std::printf("Current values: (%f, %f)\n", movementController.kP, movementController.kD);
+        while (!controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+                movementController.kP += 1;
+            }
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+                movementController.kP -= 1;
+            }
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+                movementController.kD += 1;
+            }
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+                movementController.kD -= 1;
+            }
             pros::delay(20);
         }
+
+        lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
+        
+        std::printf("Press A on the controller to continue...\n");
+        while (!controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+            pros::delay(20);
+        }
+        std::printf("----------------------------------\n");
     }
 }
 
@@ -257,46 +287,42 @@ void autonomous() {
 
     // *****
 
-    int tubeY = 33; // 32 -> 33
+    // int tubeY = 33; // 32 -> 33
 
-    chassis.setPose(0, 0, 0);
+    // chassis.setPose(0, 0, 0);
 
-    feeder.extend();
+    // feeder.extend();
 
-    // chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(0, tubeY, 1400);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(side*92, 1000);
-    chassis.waitUntilDone();
-    chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
+    // chassis.moveToPoint(0, tubeY, 1400);
     // chassis.waitUntilDone();
+    // chassis.turnToHeading(side*92, 1000);
+    // chassis.waitUntilDone();
+    // chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
     // autoIntakeEnabled = true;
-    // pros::delay(1500);
-    autoIntakeEnabled = true;
-    chassis.waitUntilDone();
-    // ****
-    chassis.moveToPoint(side*-26, tubeY+2, 850, {.forwards = false}); // slight far: x=-24
-    chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
-    feeder.retract();
-    autoIntakeEnabled = false;
-    chassis.waitUntilDone();
-    topOuttake();
-    pros::delay(3000);
+    // chassis.waitUntilDone();
+    // // ****
+    // chassis.moveToPoint(side*-26, tubeY+2, 850, {.forwards = false}); // slight far: x=-24
+    // chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
+    // feeder.retract();
+    // autoIntakeEnabled = false;
+    // chassis.waitUntilDone();
+    // topOuttake();
+    // pros::delay(3000);
 
-    stopAllCollectors();
-    chassis.moveToPoint(side*-13, tubeY, 1000);
-    chassis.waitUntilDone();
-    chassis.turnToPoint(side*-26, 14, 1000);
-    chassis.waitUntilDone();
+    // stopAllCollectors();
+    // chassis.moveToPoint(side*-13, tubeY, 1000);
+    // chassis.waitUntilDone();
+    // chassis.turnToPoint(side*-26, 14, 1000);
+    // chassis.waitUntilDone();
     
-    chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
-    chassis.waitUntil(10);
-    autoIntakeEnabled = true;
-    chassis.waitUntil(30);
-    autoIntakeEnabled = false;
-    pros::delay(200);
-    bottomOuttake();
-    chassis.waitUntilDone();
+    // chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
+    // chassis.waitUntil(10);
+    // autoIntakeEnabled = true;
+    // chassis.waitUntil(30);
+    // autoIntakeEnabled = false;
+    // pros::delay(200);
+    // bottomOuttake();
+    // chassis.waitUntilDone();
 
     // *******************
 
@@ -453,6 +479,25 @@ void opcontrol() {
             driveDirection = !driveDirection;
             modifier = driveDirection ? 1 : -1;
         }
+
+        // AUTO PID TUNING ********************************************************
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X) &&
+            controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+            // auto_tune_pid(angularController, false, 2, 5);
+            logDebug = false;
+            chassis.turnToHeading(180, 3000);
+            chassis.waitUntilDone();
+            std::printf("Press A on the controller to continue...\n");
+            while (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+                pros::delay(20);
+            }
+            angularController.kP = 10;
+            lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
+            chassis.turnToHeading(180, 3000);
+        }
+
+        // ************************************************************************
 
         pros::delay(25);
     }
