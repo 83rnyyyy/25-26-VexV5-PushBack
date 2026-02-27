@@ -170,16 +170,18 @@ void initialize() {
 
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-            std::printf(
-                "Chassis:\nX: %f\nY: %f\nTheta: %f\n\nAuto Intake: %s\n\nCollectors:\nFirst: %f\nSecond: %f\nThird: %f\n",
-                chass.x,
-                chass.y,
-                chass.theta,
-                (autoIntakeEnabled ? "enabled" : "disabled"),
-                FirstCollector.get_actual_velocity(),
-                SecondCollector.get_actual_velocity(),
-                ThirdCollector.get_actual_velocity()
-            );
+            if (logDebug) {
+                std::printf(
+                    "Chassis:\nX: %f\nY: %f\nTheta: %f\n\nAuto Intake: %s\n\nCollectors:\nFirst: %f\nSecond: %f\nThird: %f\n",
+                    chass.x,
+                    chass.y,
+                    chass.theta,
+                    (autoIntakeEnabled ? "enabled" : "disabled"),
+                    FirstCollector.get_actual_velocity(),
+                    SecondCollector.get_actual_velocity(),
+                    ThirdCollector.get_actual_velocity()
+                );
+            }
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
