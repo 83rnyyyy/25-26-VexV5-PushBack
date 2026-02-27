@@ -1,4 +1,4 @@
-#include "main.h"
+#include "main.h" // IWYU pragma: keep
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
