@@ -484,7 +484,7 @@ void opcontrol() {
             while (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                 pros::delay(20);
             }
-            angularController.kP = 10;
+            angularController.kP = 3;
             angularController.kD = 10;
             lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
             chassis.turnToHeading(180, 3000);
