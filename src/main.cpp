@@ -162,7 +162,6 @@ void initialize() {
 
     // IMPORTANT: make tasks static so they don't get destroyed when initialize() returns
     static pros::Task screenTask([] {
-        int c = 1;
         while (true) {
             lemlib::Pose chass = chassis.getPose();
             pros::lcd::print(0, "X: %f", chass.x);
@@ -171,22 +170,16 @@ void initialize() {
 
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-            if (logDebug && c == 10) {
-                std::printf("X: %f\n", chass.x);
-                std::printf("Y: %f\n", chass.y);
-                std::printf("Theta: %f\n", chass.theta);
-
-                std::printf("Auto intake %s\n", (autoIntakeEnabled ? "enabled" : "disabled"));
-
-                std::printf("FirstCollector: %f\n", FirstCollector.get_actual_velocity());
-                std::printf("SecondCollector: %f\n", SecondCollector.get_actual_velocity());
-                std::printf("ThirdCollector: %f\n", ThirdCollector.get_actual_velocity());
-                std::printf("----------------------------------\n");
-
-                c = 1;
-            }
-
-            c += 1;
+            std::printf(
+                "Chassis:\nX: %f\nY: %f\nTheta: %f\n\nAuto Intake: %s\n\nCollectors:\nFirst: %f\nSecond: %f\nThird: %f\n",
+                chass.x,
+                chass.y,
+                chass.theta,
+                (autoIntakeEnabled ? "enabled" : "disabled"),
+                FirstCollector.get_actual_velocity(),
+                SecondCollector.get_actual_velocity(),
+                ThirdCollector.get_actual_velocity()
+            );
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
@@ -250,8 +243,7 @@ void auto_tune_pid(lemlib::ControllerSettings movementController, lemlib::Chassi
         //     movementController.kP += 1;
         // }
         chassis.waitUntilDone();
-        std::printf("Change kP and kD accordingly. Left up and down for kP, X and B for kD, and A to finish.\n");
-        std::printf("Current values: (%f, %f)\n", movementController.kP, movementController.kD);
+        std::printf("Change kP and kD accordingly. Left up and down for kP, X and B for kD, and A to finish.\nCurrent values: (%f, %f)\n",movementController.kP, movementController.kD);
         while (!controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
                 movementController.kP += 1;
