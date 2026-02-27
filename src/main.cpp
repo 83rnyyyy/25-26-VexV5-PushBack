@@ -493,6 +493,7 @@ void opcontrol() {
                 pros::delay(20);
             }
             angularController.kP = 10;
+            angularController.kD = 10;
             lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
             chassis.turnToHeading(180, 3000);
         }
