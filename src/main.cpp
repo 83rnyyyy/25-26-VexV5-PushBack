@@ -473,18 +473,8 @@ void opcontrol() {
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X) &&
             controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            // auto_tune_pid(angularController, false, 2, 5);
             logDebug = false;
-            chassis.turnToHeading(180, 3000);
-            chassis.waitUntilDone();
-            std::printf("Press A on the controller to continue...\n");
-            while (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-                pros::delay(20);
-            }
-            angularController.kP = 3;
-            angularController.kD = 10;
-            lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
-            chassis.turnToHeading(180, 3000);
+            auto_tune_pid(angularController, chassis, false, 2, 5);
         }
 
         // ************************************************************************
