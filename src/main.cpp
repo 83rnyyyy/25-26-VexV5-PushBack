@@ -204,7 +204,7 @@ void competition_initialize() {}
 
 ASSET(example_txt);
 
-void auto_tune_pid(lemlib::ControllerSettings movementController, lemlib::Chassis chassis, bool linear, int margin, int OSCMargin) {
+void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, int margin, int OSCMargin) {
     logDebug = false;
     // bool osc = false;
     while (true) {
@@ -474,7 +474,7 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X) &&
             controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             logDebug = false;
-            auto_tune_pid(angularController, chassis, false, 2, 5);
+            auto_tune_pid(angularController, false, 2, 5);
         }
 
         // ************************************************************************
