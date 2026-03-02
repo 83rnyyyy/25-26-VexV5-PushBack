@@ -27,7 +27,6 @@ pros::Imu imu(10);
 // pneumatics
 pros::adi::Pneumatics wing('E', false);
 pros::adi::Pneumatics feeder('G', false);
-pros::adi::Pneumatics toggler('F', false); // default to top
 pros::adi::Pneumatics stopper('H', false);
 
 // drivetrain settings
@@ -91,15 +90,15 @@ void intake() {
 
 void topOuttake() {
     if (stopper.is_extended()) stopper.retract();
-    if (!toggler.is_extended()) toggler.extend();
     defaultCollector();
     
 }
 
 void midOuttake() {
     if (stopper.is_extended()) stopper.retract();
-    if (toggler.is_extended()) toggler.retract();
-    defaultCollector();
+    FirstCollector.move(-127);
+    SecondCollector.move(-127);
+    ThirdCollector.move(-127);
 }
 
 void bottomOuttake() {
@@ -394,7 +393,6 @@ bool manual = true;
 bool feederExtended = false;
 bool wingExtended = false;
 bool stopperExtended = true;
-bool togglerExtended = false;
 bool driveDirection = true; // default direction, brain side
 int modifier = driveDirection ? 1 : -1;
 
@@ -431,13 +429,8 @@ void opcontrol() {
 
         // Wing control
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-            wingExtended = !wingExtended;
-            if (wingExtended) {
                 wing.extend();
-            } else {
-                wing.retract();
-            }
-        }
+        } else wing.retract();
 
         // Feeder control
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
@@ -456,16 +449,6 @@ void opcontrol() {
                 stopper.extend();
             } else {
                 stopper.retract();
-            }
-        }
-
-        // Toggler control
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-            togglerExtended = !togglerExtended;
-            if (togglerExtended) {
-                toggler.extend();
-            } else {
-                toggler.retract();
             }
         }
 
