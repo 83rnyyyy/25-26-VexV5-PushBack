@@ -249,7 +249,7 @@ void auto_tune_pid(lemlib::ControllerSettings movementController, lemlib::Chassi
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
                 movementController.kP += 1;
             }
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
                 movementController.kP -= 1;
             }
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
@@ -280,42 +280,50 @@ void autonomous() {
 
     // *****
 
-    // int tubeY = 33; // 32 -> 33
+    int tubeY = 33; // 32 -> 33
 
-    // chassis.setPose(0, 0, 0);
+    chassis.setPose(0, 0, 0);
 
-    // feeder.extend();
+    feeder.extend();
 
-    // chassis.moveToPoint(0, tubeY, 1400);
-    // chassis.waitUntilDone();
-    // chassis.turnToHeading(side*92, 1000);
-    // chassis.waitUntilDone();
-    // chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
-    // autoIntakeEnabled = true;
-    // chassis.waitUntilDone();
-    // // ****
-    // chassis.moveToPoint(side*-26, tubeY+2, 850, {.forwards = false}); // slight far: x=-24
-    // chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
-    // feeder.retract();
-    // autoIntakeEnabled = false;
-    // chassis.waitUntilDone();
-    // topOuttake();
-    // pros::delay(3000);
+    chassis.moveToPoint(0, tubeY, 1400);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(side*92, 1000);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
+    autoIntakeEnabled = true;
+    chassis.waitUntilDone();
+    // ****
+    chassis.moveToPoint(side*-26, tubeY+2, 850, {.forwards = false}); // slight far: x=-24
+    chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
+    feeder.retract();
+    autoIntakeEnabled = false;
+    chassis.waitUntilDone();
+    topOuttake();
+    pros::delay(1500);
 
-    // stopAllCollectors();
-    // chassis.moveToPoint(side*-13, tubeY, 1000);
-    // chassis.waitUntilDone();
-    // chassis.turnToPoint(side*-26, 14, 1000);
-    // chassis.waitUntilDone();
+    stopAllCollectors();
+    chassis.moveToPoint(side*-13, tubeY, 1000);
+    chassis.waitUntilDone();
+    chassis.turnToPoint(side*-26, 14, 1000);
+    chassis.waitUntilDone();
     
-    // chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
-    // chassis.waitUntil(10);
-    // autoIntakeEnabled = true;
-    // chassis.waitUntil(30);
-    // autoIntakeEnabled = false;
-    // pros::delay(200);
-    // bottomOuttake();
-    // chassis.waitUntilDone();
+    chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
+    chassis.waitUntil(10);
+    autoIntakeEnabled = true;
+    chassis.waitUntil(30);
+    autoIntakeEnabled = false;
+    pros::delay(200);
+    bottomOuttake();
+    chassis.waitUntilDone();
+
+    chassis.moveToPoint(side*-20, tubeY-7, 1000, {.forwards = false});
+    chassis.waitUntilDone();
+    chassis.turnToHeading(90, 1000);
+    chassis.waitUntilDone();
+    wing.retract();
+    chassis.moveToPoint(side*-40, tubeY-7, 1000, {.forwards = false});
+    chassis.waitUntilDone();
 
     // *******************
 
@@ -430,7 +438,11 @@ void opcontrol() {
         // Wing control
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
                 wing.extend();
-        } else wing.retract();
+        } else {
+            if (!wing.is_extended()) {
+                wing.retract();
+            }
+        }
 
         // Feeder control
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
