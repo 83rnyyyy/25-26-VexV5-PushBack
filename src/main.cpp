@@ -34,22 +34,22 @@ lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.5, lemlib::Omniwheel
 // controllers
 lemlib::ControllerSettings linearController(11, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              25, // derivative gain (kD)
-                                              0, // anti windup
-                                              0, // small error range, in inches
-                                              0, // small error range timeout, in milliseconds
-                                              0, // large error range, in inches
-                                              0, // large error range timeout, in milliseconds
-                                              0 // maximum acceleration (slew)
+                                              44, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              20 // maximum acceleration (slew)
 );
-lemlib::ControllerSettings angularController(0, // proportional gain (kP) 3
+lemlib::ControllerSettings angularController(3, // proportional gain (kP) 3
                                               0, // integral gain (kI)
-                                              0, // derivative gain (kD) 10
-                                              0, // anti windup
-                                              0, // small error range, in inches
-                                              0, // small error range timeout, in milliseconds
-                                              0, // large error range, in inches
-                                              0, // large error range timeout, in milliseconds
+                                              10, // derivative gain (kD) 10
+                                              3, // anti windup
+                                              1, // small error range, in degrees
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in degrees
+                                              500, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
@@ -77,25 +77,24 @@ constexpr int side = 1; // 1 = right, -1 = left
 // -------------------- Intake & Outake functions -------------------- //
 volatile bool autoIntakeEnabled = false;
 
-void defaultCollector() {
-    FirstCollector.move(-127);
-    SecondCollector.move(-127);
-    ThirdCollector.move(127);
-}
+
 
 void intake() {
-    defaultCollector();
+    FirstCollector.move(-127);
+    SecondCollector.move(-127);
     if (!stopper.is_extended()) stopper.extend();
 }
 
 void topOuttake() {
     if (stopper.is_extended()) stopper.retract();
-    defaultCollector();
+    FirstCollector.move(-127);
+    SecondCollector.move(-127);
+    ThirdCollector.move(127);
     
 }
 
 void midOuttake() {
-    if (stopper.is_extended()) stopper.retract();
+    stopper.retract();
     FirstCollector.move(-127);
     SecondCollector.move(-127);
     ThirdCollector.move(-127);
@@ -169,18 +168,18 @@ void initialize() {
 
             pros::lcd::print(5, "Auto intake %s", (autoIntakeEnabled ? "enabled" : "disabled"));
 
-            if (logDebug) {
-                std::printf(
-                    "Chassis:\nX: %f\nY: %f\nTheta: %f\n\nAuto Intake: %s\n\nCollectors:\nFirst: %f\nSecond: %f\nThird: %f\n",
-                    chass.x,
-                    chass.y,
-                    chass.theta,
-                    (autoIntakeEnabled ? "enabled" : "disabled"),
-                    FirstCollector.get_actual_velocity(),
-                    SecondCollector.get_actual_velocity(),
-                    ThirdCollector.get_actual_velocity()
-                );
-            }
+            // if (logDebug) {
+            //     std::printf(
+            //         "Chassis:\nX: %f\nY: %f\nTheta: %f\n\nAuto Intake: %s\n\nCollectors:\nFirst: %d\nSecond: %d\nThird: %d\n",
+            //         chass.x,
+            //         chass.y,
+            //         chass.theta,
+            //         (autoIntakeEnabled ? "enabled" : "disabled"),
+            //         FirstCollector.get_faults(),
+            //         SecondCollector.get_faults(),
+            //         ThirdCollector.get_faults()
+            //     );
+            // }
 
             lemlib::telemetrySink()->info("Chassis pose: {}", chass);
 
@@ -208,7 +207,7 @@ void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, i
     logDebug = false;
     // bool osc = false;
     while (true) {
-        std::printf("Testing (%f, %f)\n", movementController.kP, movementController.kD);
+        std::printf("Testing (%f, %f)\n", angularController.kP, angularController.kD);
         chassis.setPose(0, 0, 0);
         // osc = false;
         if (linear) {
@@ -247,16 +246,16 @@ void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, i
         std::printf("Change kP and kD accordingly. Left up and down for kP, X and B for kD, and A to finish.\nCurrent values: (%f, %f)\n",movementController.kP, movementController.kD);
         while (!controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-                movementController.kP += 1;
+                angularController.kP += 1;
             }
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-                movementController.kP -= 1;
+                angularController.kP -= 1;
             }
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-                movementController.kD += 1;
+                angularController.kD += 1;
             }
             if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-                movementController.kD -= 1;
+                angularController.kD -= 1;
             }
             pros::delay(20);
         }
@@ -280,27 +279,35 @@ void autonomous() {
 
     // *****
 
-    int tubeY = 33; // 32 -> 33
+    int tubeY = 34; // 32 -> 33
 
     chassis.setPose(0, 0, 0);
 
     feeder.extend();
 
+    // chassis.moveToPoint(0, 34, 4999);
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(90, 4999);
+    
+
     chassis.moveToPoint(0, tubeY, 1400);
     chassis.waitUntilDone();
-    chassis.turnToHeading(side*92, 1000);
+    chassis.turnToHeading(side*90, 1000);
     chassis.waitUntilDone();
-    chassis.moveToPoint(side*15, tubeY+1.5, 2500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
+    chassis.moveToPoint(side*15, tubeY+1.5, 1500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
+
     autoIntakeEnabled = true;
+
     chassis.waitUntilDone();
+    
     // ****
-    chassis.moveToPoint(side*-26, tubeY+2, 850, {.forwards = false}); // slight far: x=-24
+    chassis.moveToPoint(side*-26, tubeY+3, 850, {.forwards = false}); // slight far: x=-24
     chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
     feeder.retract();
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
     topOuttake();
-    pros::delay(1500);
+    pros::delay(1000);
 
     stopAllCollectors();
     chassis.moveToPoint(side*-13, tubeY, 1000);
@@ -317,13 +324,13 @@ void autonomous() {
     bottomOuttake();
     chassis.waitUntilDone();
 
-    chassis.moveToPoint(side*-20, tubeY-7, 1000, {.forwards = false});
-    chassis.waitUntilDone();
-    chassis.turnToHeading(90, 1000);
-    chassis.waitUntilDone();
-    wing.retract();
-    chassis.moveToPoint(side*-40, tubeY-7, 1000, {.forwards = false});
-    chassis.waitUntilDone();
+    // chassis.moveToPoint(side*-20, tubeY-7, 1000, {.forwards = false});
+    // chassis.waitUntilDone();
+    // chassis.turnToHeading(90, 1000);
+    // chassis.waitUntilDone();
+    // wing.retract();
+    // chassis.moveToPoint(side*-40, tubeY-7, 1000, {.forwards = false});
+    // chassis.waitUntilDone();
 
     // *******************
 
@@ -454,15 +461,6 @@ void opcontrol() {
             }
         }
 
-        // Stopper control
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
-            stopperExtended = !stopperExtended;
-            if (stopperExtended) {
-                stopper.extend();
-            } else {
-                stopper.retract();
-            }
-        }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
             driveDirection = !driveDirection;
