@@ -271,54 +271,46 @@ void auto_tune_pid(lemlib::ControllerSettings movementController, bool linear, i
 }
 
 /* Code that runs during autonomous period */
+int tubeY = 34;
 void autonomous() {
     autoIntakeEnabled = false;
 
-    // autoIntakeEnabled = true;
-    // chassis.moveToPoint(0, 24, int timeout)
-
-    // *****
-
-    int tubeY = 34; // 32 -> 33
-
+    // begin
     chassis.setPose(0, 0, 0);
+    feeder.extend(); // extending is slow, therefore call before moving
 
-    feeder.extend();
-
-    // chassis.moveToPoint(0, 34, 4999);
-    // chassis.waitUntilDone();
-    // chassis.turnToHeading(90, 4999);
-    
-
+    // dispenser
     chassis.moveToPoint(0, tubeY, 1400);
     chassis.waitUntilDone();
-    chassis.turnToHeading(side*90, 1000);
+    chassis.turnToHeading(side*90, 1000); // turn to tube
     chassis.waitUntilDone();
-    chassis.moveToPoint(side*15, tubeY+1.5, 1500, {.maxSpeed = 80}); // t1000 -> t2500 y+2, -> y+1.5
 
+    // move into tube and intake
+    chassis.moveToPoint(side*15, tubeY+3, 1500, {.maxSpeed = 80}); // t1000 -> t2500; y+2, -> y+1.5
     autoIntakeEnabled = true;
-
     chassis.waitUntilDone();
     
-    // ****
-    chassis.moveToPoint(side*-26, tubeY+3, 850, {.forwards = false}); // slight far: x=-24
+    // back into long goal and outtake
+    chassis.moveToPoint(side*-26, tubeY+3, 1000, {.forwards = false}); // slight far: x=-24
     chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
     feeder.retract();
     autoIntakeEnabled = false;
     chassis.waitUntilDone();
     topOuttake();
-    pros::delay(1000);
+    pros::delay(2500);
 
+    // back up and turn towards middle goal
     stopAllCollectors();
-    chassis.moveToPoint(side*-13, tubeY, 1000);
+    chassis.moveToPoint(side*-9, tubeY, 1000);
     chassis.waitUntilDone();
     chassis.turnToPoint(side*-26, 14, 1000);
     chassis.waitUntilDone();
     
-    chassis.moveToPoint(side*-36.5, 6.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
+    // move to middle goal and outtake
+    chassis.moveToPoint(side*-36.5, 4.5, 3000, {.maxSpeed = 55}); // -37 -> -36, 7 -> 6
     chassis.waitUntil(10);
     autoIntakeEnabled = true;
-    chassis.waitUntil(30);
+    chassis.waitUntilDone();
     autoIntakeEnabled = false;
     pros::delay(200);
     bottomOuttake();
