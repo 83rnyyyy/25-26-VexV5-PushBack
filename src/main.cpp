@@ -406,7 +406,6 @@ void autonomous() {
 // -------------------- Driver Control -------------------- //
 bool manual = true;
 bool feederExtended = false;
-bool wingExtended = false;
 bool stopperExtended = true;
 bool driveDirection = true; // default direction, brain side
 int modifier = driveDirection ? 1 : -1;
@@ -443,12 +442,10 @@ void opcontrol() {
         }
 
         // Wing control
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-                wing.extend();
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            wing.extend(); 
         } else {
-            if (!wing.is_extended()) {
-                wing.retract();
-            }
+            wing.retract();
         }
 
         // Feeder control
