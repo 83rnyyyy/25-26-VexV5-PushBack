@@ -17,7 +17,9 @@
     Second Collector	  |    12 // Back
      Third Collector 	  |    11 // FTop
 
-          Hood            |    A 
-         Feeder           |    H  
+          Wing            |    E
+         Toggler          |    F
+         Stopper          |    !
+         Feeder           |    G 
        Color Sensor	      |    19
 
