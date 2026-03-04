@@ -320,7 +320,7 @@ void autonomous() {
     chassis.waitUntilDone();
     // autoIntakeEnabled = false;
     pros::delay(200);
-    bottomOuttake();
+    bottomOuttake2(80);
     chassis.waitUntilDone();
 
     // chassis.moveToPoint(side*-20, tubeY-7, 1000, {.forwards = false});
