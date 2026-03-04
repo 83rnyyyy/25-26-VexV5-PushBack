@@ -299,7 +299,7 @@ void autonomous() {
     chassis.waitUntilDone();
     
     // back into long goal and outtake
-    chassis.moveToPoint(side*-26, tubeY+3, 1000, {.forwards = false}); // slight far: x=-24
+    chassis.moveToPoint(side*-26, tubeY+3, 1000, {.forwards = false}); // -26 -> -28
     chassis.waitUntil(5); // new addition as a JIC measure; remove if not working
     feeder.retract(); // -37 -> -36, 7 -> 6
     autoIntakeEnabled = false;
@@ -311,16 +311,22 @@ void autonomous() {
     stopAllCollectors();
     chassis.moveToPoint(side*-8, tubeY, 1000);
     chassis.waitUntilDone();
-    chassis.turnToPoint(side*-35, 2, 1000); // side*-26, 14
+    chassis.turnToPoint(side*-35, 4, 1000); // side*-26, 14
     chassis.waitUntilDone();
     
     // move to middle goal and outtake
-    chassis.moveToPoint(side*-33, 6, 3000, {.maxSpeed = 55}); // 40 -> 30
-    //autoIntakeEnabled = true;
+    chassis.moveToPoint(side*-33.5, 5.5, 3000, {.maxSpeed = 55}); // -33 -> -34 -> 33.5, 6 -> 5 -> 5.5
+    autoIntakeEnabled = true;
+    // ******
+    chassis.waitUntil(15);
+    feeder.extend();
+    chassis.waitUntil(10);
+    feeder.retract();
+    // ******
     chassis.waitUntilDone();
-    // autoIntakeEnabled = false;
+    autoIntakeEnabled = false;
     pros::delay(200);
-    bottomOuttake2(80);
+    bottomOuttake();
     chassis.waitUntilDone();
 
     // chassis.moveToPoint(side*-20, tubeY-7, 1000, {.forwards = false});
